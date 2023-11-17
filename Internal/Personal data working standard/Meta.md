@@ -18,8 +18,11 @@ Assembly:
 
 The council multi-sign transaction in Stellar blockchain.
 
-Transaction: `...`
+Transaction: `56704e460e33d4b51a3820db7d9bc920e0fb19578cb57fbfda36284f9f6cb908`
 
-Operation: `...`
+Operation: `210710107699290113`
+
+- [StellarExpert](https://stellar.expert/explorer/public/tx/78d53052d84c54cb796aa5c1407b2e45a4d9fe5cf6d73d21cbfc0598ee51f029)
+- [StellarChain](https://stellarchain.io/operations/209677082166206465)
 
 
