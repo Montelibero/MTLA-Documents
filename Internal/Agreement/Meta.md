@@ -7,16 +7,22 @@ Russian version:
 
 File: [Agreement.ru.md](Agreement.ru.md)
 
-SHA-256: `6d21bed1fc7a9ce09c84bf6b78b4918d9d30dbe30e8f334ad0a10245d1928724`
+SHA-256: `42c61ed22418e4e9646a29b86a884dbbabdc4924a0021af1b82fa9c1624b368f`
 
 Confirmation
 ------------
 
+Assembly:
+
+- [Proposal in the Assembly chat](https://t.me/c/1892843127/3661)
+- [Voting in the Assembly chat](https://t.me/c/1892843127/3659)
+- [List of the delegations and log of the votes](https://docs.google.com/spreadsheets/d/1C4ppKdZ9-zSIWfZcj1Uwf1JKF4jQmcSTIURPMFTBOaE)
+
 The council multi-sign transaction in Stellar blockchain.
 
-Transaction: `d694b4543af30f6fa394971387c6f4aa8a13c353ba2c70770b81da34c86816d2`
+Transaction: `681d320787f4f165f76457e0b022d9d473b3638d6183f693c9f02a15f9f346f4`
 
-Operation: `208927550243512321`
+Operation: `211159223839805441`
 
-- [StellarExpert](https://stellar.expert/explorer/public/tx/8dfca3962d930b57620c25c6207a6cc05fd6c5a9b7eb14830f2cc4666544b62a)
-- [StellarChain](https://stellarchain.io/operations/208927550243512321)
+- [StellarExpert](https://stellar.expert/explorer/public/tx/681d320787f4f165f76457e0b022d9d473b3638d6183f693c9f02a15f9f346f4)
+- [StellarChain](https://stellarchain.io/operations/211159223839805441)
