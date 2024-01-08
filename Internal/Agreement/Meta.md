@@ -1,3 +1,10 @@
+English version:
+================
+
+File: [Agreement.en.md](Agreement.en.md)
+
+SHA-256: `` (Not ready yet)
+
 Russian version:
 ================
 
