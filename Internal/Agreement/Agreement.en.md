@@ -62,7 +62,7 @@ Agreement
 
 
 8. Corporate participants may come into agreement (sealed by decision of the Assembly or the Council) to perform functions
-   and/or solve tasks, either on a permantner or project basis, in the interests and on behalf of the Association, including,
+   and/or solve tasks, either on a permanent or project basis, in the interests and on behalf of the Association, including,
    but not limited to, the following:
 
    a) Set up and maintain tokenomics on the blockchain — both as a general infrastructure platform and its individual
