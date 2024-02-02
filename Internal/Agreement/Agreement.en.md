@@ -1,3 +1,6 @@
+> This text is for informational purposes only, the original Agreement in Russian is available here:
+[Agreement.ru.md](Agreement.ru.md).
+
 Agreement
 =========
 
