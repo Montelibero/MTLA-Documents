@@ -5,4 +5,12 @@ Russian version:
 
 File: [Plan 2024.ru.md](Plan%202024.ru.md)
 
-SHA-256: `e7bb8bb6e84bf2182294490c5b588fc175bbc0b0898d10d5caabb7c006a42672`
+SHA-256: `4713db3af9927baa59ddc7287d371ac0d835451ce2212168eed1c9015562762e`
+
+Confirmation
+------------
+
+Assembly:
+
+- [Proposal in the Assembly chat](https://t.me/c/1892843127/6118)
+- [Voting in the Assembly chat](https://t.me/c/1892843127/6295)
