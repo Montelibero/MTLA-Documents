@@ -14,3 +14,12 @@ Assembly:
 
 - [Proposal in the Assembly chat](https://t.me/c/1892843127/6118)
 - [Voting in the Assembly chat](https://t.me/c/1892843127/6295)
+
+The council multi-sign transaction in Stellar blockchain.
+
+- [Invitation to sign the transaction](https://t.me/c/1944691324/4143)
+- [Multisignature setup](https://eurmtl.me/sign_tools/3ef763b6b1c469ff39d010fc1b58f1f0850493e0c485ad2a8f91227bbfb4e585)
+- Transaction: `3ef763b6b1c469ff39d010fc1b58f1f0850493e0c485ad2a8f91227bbfb4e585`
+- Operation: `215926985430773761`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/3ef763b6b1c469ff39d010fc1b58f1f0850493e0c485ad2a8f91227bbfb4e585)
+- [StellarChain](https://stellarchain.io/operations/215926985430773761)
