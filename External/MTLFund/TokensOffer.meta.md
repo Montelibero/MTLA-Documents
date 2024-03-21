@@ -10,10 +10,11 @@ SHA-256: `70ae72e7be9947b3b87a268f13e1d93703ab083d074499a3b690c3b17d6776fb`
 Confirmation
 ------------
 
-Transaction: ``
+Signers Council of the Fund:
 
-Operation: ``
+Transaction: `4f0b36cb54bd52d985195875705c1f3d424e6f8b96344065f23b100e7f45ff8b`
 
-[//]: # (- [StellarExpert]&#40;https://stellar.expert/explorer/public/tx/78d53052d84c54cb796aa5c1407b2e45a4d9fe5cf6d73d21cbfc0598ee51f029&#41;)
+Operation: `218244949216477185`
 
-[//]: # (- [StellarChain]&#40;https://stellarchain.io/operations/209677082166206465&#41;)
+- [StellarExpert](https://stellar.expert/explorer/public/tx/4f0b36cb54bd52d985195875705c1f3d424e6f8b96344065f23b100e7f45ff8b)
+- [StellarChain](https://stellarchain.io/operations/218244949216477185)
