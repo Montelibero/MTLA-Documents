@@ -9,3 +9,4 @@ Own offers, rules and regulations of the Association
 - [Personal data working standard](Personal%20data%20working%20standard): [Russian version](Agreement/Agreement.ru.md), [meta data](Agreement/Meta.md)
 - [Regulations on participation](Participation): [Russian version](Participation/Participation.ru.md), [meta data](Participation/Meta.md)
 - [Council Regulations](Council): [Russian version](Council/Council.ru.md), [meta data](Council/Meta.md)
+- [Blockchainization Of Relationships](BlockchainizationOfRelationships): [Russian version](BlockchainizationOfRelationships/BlockchainizationOfRelationships.ru.md), [meta data](BlockchainizationOfRelationships/Meta.md)
