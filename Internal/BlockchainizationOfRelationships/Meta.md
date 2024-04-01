@@ -11,3 +11,10 @@ Confirmation
 ------------
 
 The council multi-sign transaction in Stellar blockchain.
+
+- [Invitation to sign the transaction](https://t.me/c/2042260878/94)
+- [Multisignature setup](https://eurmtl.me/sign_tools/7eb2eff992463ccacd94b08636ae49ebd646198536fb0cf621b49c6ce09b5085)
+- Transaction: `7eb2eff992463ccacd94b08636ae49ebd646198536fb0cf621b49c6ce09b5085`
+- Operation: `219247390288375809`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/7eb2eff992463ccacd94b08636ae49ebd646198536fb0cf621b49c6ce09b5085)
+- [StellarChain](https://stellarchain.io/operations/219247390288375809)
