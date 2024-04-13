@@ -12,7 +12,7 @@ Agreement
 
 2. The Montelibero Association (hereinafter referred to as "the Association") is a structure with fixed membership,
    aimed at enhancing the effectiveness and efficiency of achieving the goals of the Montelibero project and Movement.
-   This is achieved through higher social cohesion and mutual responsibility of the members, while maintaining the
+   This is achieved through higher social cohesion and mutual responsibility of the participants, while maintaining the
    priority of freedom and self-organization, and without claiming a monopoly on representing the interests of the
    Movement.
 
@@ -29,13 +29,11 @@ Agreement
    application confirms the applicant's consent to the public nature of the data contained therein.
 
 
-5. Exclusion from the Association can be triggered by either a personal withdrawal request from the member himself or a
+5. Exclusion from the Association can be triggered by either a personal withdrawal request from the participant himself or a
    motivated request for exclusion put forward by the Council, any corporate participant (company, organization), or
    by other request supported by no less than 5% of the participants' votes. Grounds for a demand for exclusion from the Association
    include a gross violation of the NAP or norms accepted in the community, as well as systematic non-participation in
-   the activities of the Association, at least in the form of delegation. The fact of exclusion is recorded by
-   withdrawing the corresponding number of participation tokens from the member's balance, and a public announcement is
-   made to all participants.
+   the activities of the Association, at least in the form of delegation. The fact of a participant's expulsion from the Association is documented by the withdrawal of participation tokens after the completion of mutual settlements and the fulfillment of undertaken obligations.
 
 
 6. The Assembly is the highest governing body of the Association, making decisions based on a liquid democracy scheme,
@@ -43,9 +41,9 @@ Agreement
    Assembly clarifies goals, approves strategic and medium-term plans (roadmaps), and addresses other issues within the
    legal framework of the Association. All decisions of the Assembly, except those explicitly stated in this Agreement,
    are made by a simple majority of individual participants' votes (including delegated votes). Decisions on adopting and
-   amending this Agreement and on the exclusion of members from the Association upon request are made by a qualified
+   amending this Agreement and on the exclusion of participants from the Association upon request are made by a qualified
    majority of 75% of the total number of individual participants' votes (including delegated votes). Proposals for the
-   Assembly members' vote are submitted by the Council, on its initiative, or at the request of at least 5% (and for a
+   Assembly participants' vote are submitted by the Council, on its initiative, or at the request of at least 5% (and for a
    vote of no confidence in the Council – at least 10%) of the total number of participants' votes (including delegated votes).
    The discussion of proposals submitted for consideration by the Assembly is conducted on communication platforms,
    the composition and administration of which are determined by the Council.
@@ -85,9 +83,9 @@ Agreement
    activities, and responsibility for commitments in its legal system. Specifically, the presence of a corresponding
    number of participation or status tokens on a participant's balance corresponds to the following statuses:
 
-   a) 1 individual token — the applicant has successfully passed personal verification by any member of the Association;
+   a) 1 individual token — the applicant has successfully passed personal verification by any participant of the Association;
 
-   b) 2 individual tokens — the member has successfully passed verification by any certified verifier of the
+   b) 2 individual tokens — the participant has successfully passed verification by any certified verifier of the
    Association;
 
    c) 3 individual tokens — creditworthy participant of the tokenomics;
