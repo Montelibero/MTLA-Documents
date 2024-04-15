@@ -56,7 +56,7 @@ Agreement
    multi-signature, and other administrative tasks as stipulated by this Agreement and the decisions of the Assembly.
    The Council serves as the nominal owner and manager of the Association's resources and also acts as the default
    guarantor and arbitrator in the Montelibero legal system. The Council is formed of 20 (twenty) verified individuals
-   possessing the highest number of participation tokens, considering delegation and the time of their acquisition.
+   possessing the highest number of participation tokens, considering delegation.
    All the decisions done by the Council, except those explicitly stated in this Agreement or in the Assembly's decisions, are
    made by a simple majority of its current composition's votes, considering delegation (with logarithmic equalization,
    namely: for 10 or fewer delegated votes, 1 vote is added, for 11-100 — 2 votes, for 101-1000 — 3 votes, etc.).
