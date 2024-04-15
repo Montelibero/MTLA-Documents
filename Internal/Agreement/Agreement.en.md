@@ -85,7 +85,7 @@ Agreement
    activities, and responsibility for commitments in its legal system. Specifically, the presence of a corresponding
    number of participation or status tokens on a participant's balance corresponds to the following statuses:
 
-   a) 1 individual token — the applicant has successfully passed personal verification by any member of the Association;
+   1 individual token — the applicant has received a recommendation by any participant of the Association.
 
    b) 2 individual tokens — the member has successfully passed verification by any certified verifier of the
    Association;
