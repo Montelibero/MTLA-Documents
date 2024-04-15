@@ -92,7 +92,8 @@ Agreement
 
    c) 3 individual tokens — creditworthy participant of the tokenomics;
 
-   d) 4 individual tokens — impact activist, leader/director of its corporate participant;
+   d) 4 individual tokens — impact activist, leader/director of its corporate participant with three or more 
+      participation tokens;
 
    e) 5 individual tokens — leader/director of a corporate participant-donor of the Association.
 
