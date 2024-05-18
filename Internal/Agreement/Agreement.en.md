@@ -56,7 +56,7 @@ Agreement
    multi-signature, and other administrative tasks as stipulated by this Agreement and the decisions of the Assembly.
    The Council serves as the nominal owner and manager of the Association's resources and also acts as the default
    guarantor and arbitrator in the Montelibero legal system. The Council is formed of 20 (twenty) verified individuals
-   possessing the highest number of participation tokens, considering their delegation and the time of their acquisition.
+   possessing the highest number of participation tokens, considering their delegation.
    All the decisions done by the Council, except those explicitly stated in this Agreement or in the Assembly's decisions, are
    made by a simple majority of its current composition's votes, considering delegation (with logarithmic equalization,
    namely: for 10 or fewer tokens considered as 1 vote, for 11-100 — 2 votes, for 101-1000 — 3 votes, etc.).
@@ -85,14 +85,15 @@ Agreement
    activities, and responsibility for commitments in its legal system. Specifically, the presence of a corresponding
    number of participation or status tokens on a participant's balance corresponds to the following statuses:
 
-   a) 1 individual token — the applicant has successfully passed personal verification by any participant of the Association;
+   a) 1 individual token — the applicant has recommended by any participant of the Association.
 
    b) 2 individual tokens — the participant has successfully passed verification by any certified verifier of the
    Association;
 
    c) 3 individual tokens — creditworthy participant of the tokenomics;
 
-   d) 4 individual tokens — impact activist, leader/director of its corporate participant;
+   d) 4 individual tokens — impact activist, leader/director of its corporate participant with three or more 
+      participation tokens;
 
    e) 5 individual tokens — leader/director of a corporate participant-donor of the Association.
 
