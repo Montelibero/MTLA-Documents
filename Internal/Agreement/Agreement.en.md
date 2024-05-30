@@ -21,6 +21,7 @@ Agreement
    Montelibero Movement, fully acknowledging and adhering to this Agreement, possessing MTLAP or MTLAC participation tokens (for
    individuals and groups, respectively), and having the rights and obligations associated with this
    status.
+   Only its verified individual members have the right to a decisive vote in the Association.
 
 
 4. Admission to the Association is carried out by the Council upon reviewing an application containing necessary contact

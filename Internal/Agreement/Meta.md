@@ -10,7 +10,7 @@ Russian version:
 
 File: [Agreement.ru.md](Agreement.ru.md)
 
-SHA-256: `b5422c5d696333c47dae41f2384573f8b65f55c5040e2ad404818feacdd2b8f1`
+SHA-256: `cf258a8dbb96096f8d8924dbdd403b78f1bafe62c6ddf372827040dbb3c2a684`
 
 Confirmation
 ------------
