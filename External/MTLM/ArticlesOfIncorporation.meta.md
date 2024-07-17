@@ -1,0 +1,4 @@
+File: [ArticlesOfIncorporation.ru.md](ArticlesOfIncorporation.ru.md)
+SHA-256: `8cf9e39083fb6f4808b79d1ad01e1819528bb5207484d4dd801e943a6e008ed4`
+
+https://eurmtl.me/sign_tools/ab6b24071e7e6f3ccb1ea9c82959d4dcb8cf28b36c5f8aff375b827d9d2769a6
