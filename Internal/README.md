@@ -7,7 +7,7 @@ Own offers, rules and regulations of the Association
 - [Russian](Agreement/Agreement.ru.md)
 - [Meta](Agreement/Meta.md)
 
-## Plans: 
+## Plans:
 - [2024](Plans/2024)
 
 ## Court Rules
