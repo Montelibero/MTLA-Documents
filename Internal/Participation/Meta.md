@@ -3,14 +3,11 @@ Russian version:
 
 File: [Participation.ru.md](Participation.ru.md)
 
-SHA-256: `09ed4cd271c7b4a96015d754e24f03fb3647b8181eed9c7733d44b87bf91fa78`
+SHA-256: `84a3002314e14b47c84b8f8d9a7c29409a4aac4ec4dd33d8bdeacc199989e4fb`
 
 The council multi-sign transaction in Stellar blockchain.
 
-Transaction: `babc823938b6f76ad7f56e38eea140c33067f34bb63f8f7384fdc529710ea0f4`
-
-Operation: `211360421582708737`
-
-- [StellarExpert](https://stellar.expert/explorer/public/tx/babc823938b6f76ad7f56e38eea140c33067f34bb63f8f7384fdc529710ea0f4)
-- [StellarChain](https://stellarchain.io/operations/211360421582708737)
-
+- [Invitation to sign the transaction](https://t.me/c/2042260878/207)
+- [Multisignature setup](https://eurmtl.me/sign_tools/0f17bcb48f85c5522f194a3fb923dc66d53b941624c287b2a7317ce360306ef3)
+- Transaction: `0f17bcb48f85c5522f194a3fb923dc66d53b941624c287b2a7317ce360306ef3`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/0f17bcb48f85c5522f194a3fb923dc66d53b941624c287b2a7317ce360306ef3)

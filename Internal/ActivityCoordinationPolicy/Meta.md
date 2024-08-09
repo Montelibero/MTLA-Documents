@@ -6,16 +6,14 @@ Base: https://docs.google.com/document/d/1CXdggXI4euVUdLM74QBlDvjIoKl4PRc_8K9KQn
 
 File: [ActivityCoordinationPolicy.ru.md](ActivityCoordinationPolicy.ru.md)
 
-SHA-256: `b7cc2b905b6efe0b6a55a9f6e21c5770c888260328eedf53ebeade55974ad5e7`
+SHA-256: `2d84443b40c84c83e94e22c1ff99af2aa9ff592b489c683079343109ae4bc7ed`
 
 ## Confirmation
 
 The council multi-sign transaction in Stellar blockchain.
 
-- [Invitation to sign the transaction](https://t.me/c/2042260878/119)
-- [Multisignature setup](https://eurmtl.me/sign_tools/22f36298ded467d94d339a30426145b33c28fec91d823b7e455d7821a59f9933)
-- Transaction: `22f36298ded467d94d339a30426145b33c28fec91d823b7e455d7821a59f9933`
-- Operation: `220807288050073601`
-- [StellarExpert](https://stellar.expert/explorer/public/tx/22f36298ded467d94d339a30426145b33c28fec91d823b7e455d7821a59f9933)
-- [StellarChain](https://stellarchain.io/operations/220807288050073601)
+- [Invitation to sign the transaction](https://t.me/c/2042260878/208)
+- [Multisignature setup](https://eurmtl.me/sign_tools/abc7f464549804cb81f221fff2707b988b1c5d1d9f19c09ce17a01f1ae10a021)
+- Transaction: `abc7f464549804cb81f221fff2707b988b1c5d1d9f19c09ce17a01f1ae10a021`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/abc7f464549804cb81f221fff2707b988b1c5d1d9f19c09ce17a01f1ae10a021)
   
