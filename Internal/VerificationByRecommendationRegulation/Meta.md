@@ -1,9 +1,9 @@
 Russian version:
 ================
 
-File: [Participation.ru.md](Participation.ru.md)
+File: [VerificationByRecommendationRegulation.ru.md](VerificationByRecommendationRegulation.ru.md)
 
-SHA-256: `539166283131037de48072c11428cb95c8171536caa892ae9fc9308dc5e80bf9`
+SHA-256: `8c0d9ee50957314906024476038779ffde28b33d6b6868ce71c58d446e42d28e`
 
 The council multi-sign transaction in Stellar blockchain.
 
