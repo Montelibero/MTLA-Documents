@@ -1,9 +1,8 @@
 # Principles of the Montelibero Association
 
-We, the participants of the Montelibero Association, formulate the fundamental principles that guide decision-making
-within the Association and describe our activities. These principles apply solely within the framework of the
-Association, to its officials in the course of their duties, and do not regulate the personal beliefs of participants
-outside of it.
+We, the participants of the Montelibero Association, define the basic principles that guide our decisions and describe
+our activities within the Association. As co-authors of the activities on the Association's platforms, and especially as
+its representatives, we are guided by these principles.
 
 ## 1. Self-Ownership and the Non-Aggression Principle
 
@@ -12,8 +11,9 @@ person. We adhere to the non-aggression principle and oppose aggressive violence
 
 ## 2. Freedom of Association
 
-We support freedom of association both within and outside the Association. We preserve the right of any part of the
-Association to secede and we develop fair and transparent procedures for dividing property and liabilities.
+We support freedom of association and the autonomy of contractual jurisdictions within and outside the Association. We
+preserve the right of any part of the Association to secede and we develop fair and transparent procedures for dividing
+property and liabilities.
 
 ## 3. The Golden Rule and Equality
 
@@ -25,7 +25,7 @@ allow it, and responsibility should be proportional to the act.
 We reject the monopoly on truth and acknowledge that our point of view is limited by our experience. We don't make
 decisions on behalf of others and we respect their right to make their own choices.
 
-## 5. The Importance of Local Communities
+## 5. The Support for Local Communities
 
 The development and security of Montelibero's territorial communities are a priority for us, as participants of the
 Montelibero movement.
@@ -51,5 +51,5 @@ We protect the environment, because we realize it affects everyone.
 
 ## 10. Solidarity
 
-We recognize those who share these principles as our allies. We try to resolve conflicts within the movement by
-accepting the presumption of good intentions of participants.
+We recognize those who share these principles as our allies. We favor the peaceful resolution of conflicts within the
+Montelibero movement by accepting the presumption of good intentions of participants.
