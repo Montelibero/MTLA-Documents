@@ -1,8 +1,8 @@
 # Program: SkyNet
 
 File: [SkyNet.ru.md](SkyNet.ru.md)
-SHA-256: `68d929f85615f8e4c85e1079e0555112bd851bafc55a3b51bcbf1fc185bd88b6`
+SHA-256: `5852c0d687f4498c3374f4ef308f0401a90692d0f767903c1772dedcde438e00`
 
 Accepted by the Council transaction:
-* https://eurmtl.me/sign_tools/55375f0c5db83e2786fd38b65fbb0ed9fe5bbcb97d16bd828545e7854daf2c58
-* https://stellar.expert/explorer/public/tx/55375f0c5db83e2786fd38b65fbb0ed9fe5bbcb97d16bd828545e7854daf2c58
+* https://eurmtl.me/sign_tools/a3ee7f94014ecfe48c15629dec5b009e6f82f000faf8532738117af0d4eeb0ea
+* https://stellar.expert/explorer/public/tx/a3ee7f94014ecfe48c15629dec5b009e6f82f000faf8532738117af0d4eeb0ea
