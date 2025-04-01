@@ -1,24 +1,20 @@
 Montelibero Association Council Regulations
 ===========================================
 
-Base: https://docs.google.com/document/d/1eJ3Uso4HfY4Sd_kneosP4sXnnh771isSG1i6OMos2kM/edit
-
 Russian version:
 ----------------
 
 File: [Council.ru.md](Council.ru)
 
-SHA-256: `f503e85bc44647d6511427d87e8e488c384b31df626e7337678d84935121a9f1`
+SHA-256: `97c88e3449ef302990c4b889d14c50ed31c1b3b56ea7746b0734bf8040dbf4d0`
 
 Confirmation
 ------------
 
 The council multi-sign transaction in Stellar blockchain.
 
-- [Invitation to sign the transaction](https://t.me/c/2042260878/59)
-- [Multisignature setup](https://eurmtl.me/sign_tools/44eda6d174eaee0cfc341d6b7030267a97420d3c622420fee1c15397f24683a4)
-- Transaction: `44eda6d174eaee0cfc341d6b7030267a97420d3c622420fee1c15397f24683a4`
-- Operation: `216752877576896513`
-- [StellarExpert](https://stellar.expert/explorer/public/tx/44eda6d174eaee0cfc341d6b7030267a97420d3c622420fee1c15397f24683a4)
-- [StellarChain](https://stellarchain.io/operations/216752877576896513)
+- [Invitation to sign the transaction](https://t.me/c/2042260878/432)
+- [Multisignature setup](https://eurmtl.me/sign_tools/ad27ee244dd62297fb8a9a958fe27cc461756a4188fb70c1455aec54678df662)
+- Transaction: `ad27ee244dd62297fb8a9a958fe27cc461756a4188fb70c1455aec54678df662`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/ad27ee244dd62297fb8a9a958fe27cc461756a4188fb70c1455aec54678df662)
   
