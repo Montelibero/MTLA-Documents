@@ -36,7 +36,7 @@ Agreement
    include a gross violation of the NAP or norms accepted in the community, as well as systematic non-participation in
    the activities of the Association, at least in the form of delegation. The fact of a participant's expulsion from the Association 
    is documented by the withdrawal of participation tokens after the completion of mutual settlements and the fulfillment 
-   of undertaken obligations.
+   of undertaken obligations, or inclusion of the ex-participant into the list of unscrupulous contractors.
 
 
 6. The Assembly is the highest governing body of the Association, making decisions based on a liquid democracy scheme,
