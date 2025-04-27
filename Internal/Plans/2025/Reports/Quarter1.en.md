@@ -4,9 +4,9 @@
 
 2. The coordinators of the main sections of the Plan were approved by the Council on 2025-03-19.
 
-3. General and working meetings on filling out the main work table of the Plan were held on 2025-02-03 (https://t.me/c/2014334393/1741 — MTLA: Planning), 2025-02-19 (main channel), 2025-03-25 (https://t.me/c/2116208659/29510 and https://t.me/c/2116208659/29514 — MCC)
+3. General and working meetings on filling out the main work table of the Plan were held on 2025-02-03 (https://t.me/c/2014334393/1741 — MTLA: Planning), 2025-02-19 (https://t.me/Seasteading_EastEurope/146710 — main channel), 2025-03-25 (https://t.me/c/2116208659/29510 and https://t.me/c/2116208659/29514 — MCC).
 
-4. As a result of clarifying the decomposition of the main directions and objectives of the Plan, the programs and coordinators implementing them have been preliminarily settled (approximately 90%). Most of them are members of the MCC, but there are also four activists who are not in MCC (@ved_newman, @LisozTech, @kiriruru, @Serregan)
+4. As a result of clarifying the decomposition of the main directions and objectives of the Plan, the programs and coordinators implementing them have been preliminarily settled (approximately 90%). Most of them are members of the MCC, but there are also four activists who are not in MCC (@ved_newman, @LisozTech, @kiriruru, @Serregan).
 
 5.  Target indicators progress as of 2025-04-19:
 * individual participants: +36 (24% of the year Plan);
