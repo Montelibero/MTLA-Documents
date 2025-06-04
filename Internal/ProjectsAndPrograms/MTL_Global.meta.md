@@ -3,4 +3,4 @@ Montelibero Global Program
 
 File: [MTL_Global.ru.md](MTL_Global.ru.md)
 
-SHA-256: `37dcf44acda54a1bd4ab6495264aafb7ebc516863180a4ef12ba4e5ba42a902b`
+SHA-256: `ad18c5c8c661331efc383ba49dd4f0f251e31836077491334f5ac07719b13ba2`
