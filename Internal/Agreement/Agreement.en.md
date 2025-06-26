@@ -34,9 +34,10 @@ Agreement
    motivated request for exclusion put forward by the Council, any corporate participant (company, organization), or
    by other request supported by no less than 5% of the participants' votes. Grounds for a demand for exclusion from the Association
    include a gross violation of the NAP or norms accepted in the community, as well as systematic non-participation in
-   the activities of the Association, at least in the form of delegation. The fact of a participant's expulsion from the Association
-   is documented by the withdrawal of participation tokens after the completion of mutual settlements and fulfillment of obligations,
-   or by being listed in special registries of unreliable counterparties.
+   the activities of the Association, at least in the form of delegation, prolonged unresponsiveness via the contact 
+   information on record. The fact of a participant's expulsion from the Association is documented by the withdrawal of 
+   participation tokens after the completion of mutual settlements and fulfillment of obligations, or by being listed in 
+   special registries of unreliable counterparties.
 
 
 6. The Assembly is the highest governing body of the Association, making decisions based on a liquid democracy scheme,
