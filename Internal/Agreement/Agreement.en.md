@@ -25,7 +25,7 @@ Agreement
 
 
 4. Admission to the Association is carried out by the Council upon reviewing an application containing necessary contact
-   and verification data. The admission is done by sending the appropriate amount of participation tokens to the applicant's
+   data. The admission is done by sending the appropriate amount of participation tokens to the applicant's
    account, thereby recording the fact of a specific participant's acception of this Agreement. Submitting an
    application confirms the applicant's consent to the public nature of the data contained therein.
 
@@ -34,9 +34,10 @@ Agreement
    motivated request for exclusion put forward by the Council, any corporate participant (company, organization), or
    by other request supported by no less than 5% of the participants' votes. Grounds for a demand for exclusion from the Association
    include a gross violation of the NAP or norms accepted in the community, as well as systematic non-participation in
-   the activities of the Association, at least in the form of delegation, prolonged unresponsiveness via the contact information on record.
-   The fact of a participant's expulsion from the Association is documented by the withdrawal of participation tokens
-   after the completion of mutual settlements and the fulfillment of undertaken obligations.
+   the activities of the Association, at least in the form of delegation, prolonged unresponsiveness via the contact 
+   information on record. The fact of a participant's expulsion from the Association is documented by the withdrawal of 
+   participation tokens after the completion of mutual settlements and fulfillment of obligations, or by being listed in 
+   special registries of unreliable counterparties.
 
 
 6. The Assembly is the highest governing body of the Association, making decisions based on a liquid democracy scheme,
@@ -88,8 +89,7 @@ Agreement
 
    a) 1 individual token — the applicant has recommended by any participant of the Association.
 
-   b) 2 individual tokens — the participant has successfully passed verification by any certified verifier of the
-   Association;
+   b) 2 individual tokens — the participant has successfully passed verification;
 
    c) 3 individual tokens — creditworthy participant of the tokenomics;
 
