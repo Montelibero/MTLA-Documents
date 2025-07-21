@@ -1,11 +1,11 @@
 # Progress report on the implementation of the MTLA-2025 Plan at the end of the second quarter of 2025
 
-1. The assignment of the Meeting in clauses. 1.2. and 1.3. of the Plan on its decomposition in a tabular format is partially fulfilled, namely: the decomposition is brought to the level of specific programs, specific responsible persons (coordinators) are assigned for all sections and the majority of directions and tasks of the Plan; weekly control of the state of the working table of the Plan is established in the MCC.
+1. The assignment of the Meeting in clauses. 1.2. and 1.3. of the Plan on its decomposition in a [tabular format](https://docs.google.com/spreadsheets/d/1QdZ43cWByY5f_EXsmpPss1o_NsW7fLE7i_3YXrnDdis) is partially fulfilled, namely: the decomposition is brought to the level of specific programs, specific responsible persons (coordinators) are assigned for all sections and the majority of directions and tasks of the Plan; weekly control of the state of the working table of the Plan is established in the MCC.
 
 2. Within the framework of fulfillment of clause 1, the PMU held working meetings on filling in the main working table of the Plan:
-    * 2025-05-05 — subsection "Organization and Management",
-    * 2025-05-06 — subsections "Culture", "Security", "Analytics", "Economics", "Integration of participants",
-    * 2025-05-09 — subsections "Community structuring", "Media support", "External relations"; clarifications in the sections "Culture", "Security", "Economics".
+    * 2025-05-05 — [subsection "Organization and Management"](https://t.me/c/2116208659/32109),
+    * 2025-05-06 — [subsections "Culture", "Security", "Analytics", "Economics", "Integration of participants"](https://t.me/c/2116208659/32217),
+    * 2025-05-09 — [subsections "Community structuring", "Media support", "External relations"; clarifications in the sections "Culture", "Security", "Economics"](https://t.me/c/2116208659/32299).
 
 3. The Assembly's assignment in clause 1.2. of the Plan in the part of “clarification and distribution of target indicators, budget resources” has not been fulfilled. By end of August it is planned to execute and submit to the Council at least an enlarged layout of the specified distribution, at the level of the main directions.
 
