@@ -187,5 +187,5 @@ MTL City повышает динамику своего развития, вов
 
 ## 10. Ответственный координатор программы
 
-Некоммерческий фонд развития МТЛ-Сити GCPKPDLX654HZHU5IRGW3YDX732THUXZBH6ZWH4ZOULD53XTP7CEGROW @DimaBuilder при
+Некоммерческий фонд развития МТЛ-Сити GCPKPDLX654HZHU5IRGW3YDX732THUXZBH6ZWH4ZOULD53XTP7CEGROW @lena_masterica при
 вспомогательной поддержке МТЛ-Фонда и других заинтересованных организаций.

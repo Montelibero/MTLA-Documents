@@ -1,8 +1,14 @@
 # Program: MTL City
 
 File: [MTLCity.ru.md](MTLCity.ru.md)
-SHA-256: `5ee2f7ec8eb5c0f7c943b00cd54c4cfebbd7562f5bd8a6cee805ff6aabc0f076`
 
-Accepted by the Council transaction:
-* https://eurmtl.me/sign_tools/6da73febe6aa92418c276e33427bbb85769187baaeaf99e8e64a69b85095a179
-* https://stellar.expert/explorer/public/tx/6da73febe6aa92418c276e33427bbb85769187baaeaf99e8e64a69b85095a179
+SHA-256: `a27f54eab0acdaed1d228648002afee97ae1a50faf842e6e65ddda34636cd130`
+
+## Confirmation
+
+The council multi-sign transaction in Stellar blockchain.
+
+- [Invitation to sign the transaction](https://t.me/c/2042260878/538)
+- [Multisignature setup](https://eurmtl.me/sign_tools/0a36dd8b98fabdc6a08172cfa160dd2bad4fa8c7f0c4961ca6dac0bcdbb6fb56)
+- Transaction: `0a36dd8b98fabdc6a08172cfa160dd2bad4fa8c7f0c4961ca6dac0bcdbb6fb56`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/0a36dd8b98fabdc6a08172cfa160dd2bad4fa8c7f0c4961ca6dac0bcdbb6fb56)
