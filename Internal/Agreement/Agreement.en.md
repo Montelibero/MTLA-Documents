@@ -96,7 +96,7 @@ Agreement
    d) 4 individual tokens — impact activist, leader/director of its corporate participant with three or more 
       participation tokens;
 
-   e) 5 individual tokens — leader/director of a corporate participant-donor of the Association.
+   e) 5 individual tokens — significant donor of the Association.
 
    f) 1 corporate token — an association (group, organization) is verified as real and accounted for in the status of a
    corporate participant of the Association;
