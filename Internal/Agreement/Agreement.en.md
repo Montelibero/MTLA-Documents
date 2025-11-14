@@ -10,27 +10,27 @@ Agreement
    and practices that ensure the protection and expansion of personal sovereignty for each supporter of the Non-Aggression Principle.
 
 
-3. The Montelibero Association (hereinafter referred to as "the Association") is a structure with fixed membership,
+2. The Montelibero Association (hereinafter referred to as "the Association") is a structure with fixed membership,
    aimed at enhancing the effectiveness and efficiency of achieving the goals of the Montelibero project and Movement.
    This is achieved through higher social cohesion and mutual responsibility of the participants, while maintaining the
    priority of freedom and self-organization, and without claiming a monopoly on representing the interests of the
    Movement.
 
 
-4. Participants of the Association are individuals or groups (corporate participants) who are part of the
+3. Participants of the Association are individuals or groups (corporate participants) who are part of the
    Montelibero Movement, fully acknowledging and adhering to this Agreement, possessing MTLAP or MTLAC participation tokens (for
    individuals and groups, respectively), and having the rights and obligations associated with this
    status.
    Only its verified individual members have the right to a decisive vote in the Association.
 
 
-5. Admission to the Association is carried out by the Council upon reviewing an application containing necessary contact
+4. Admission to the Association is carried out by the Council upon reviewing an application containing necessary contact
    data. The admission is done by sending the appropriate amount of participation tokens to the applicant's
    account, thereby recording the fact of a specific participant's acception of this Agreement. Submitting an
    application confirms the applicant's consent to the public nature of the data contained therein.
 
 
-6. Exclusion from the Association can be triggered by either a personal withdrawal request from the participant himself or a
+5. Exclusion from the Association can be triggered by either a personal withdrawal request from the participant himself or a
    motivated request for exclusion put forward by the Council, any corporate participant (company, organization), or
    by other request supported by no less than 5% of the participants' votes. Grounds for a demand for exclusion from the Association
    include a gross violation of the NAP or norms accepted in the community, as well as systematic non-participation in
@@ -40,7 +40,7 @@ Agreement
    special registries of unreliable counterparties.
 
 
-7. The Assembly is the highest governing body of the Association, making decisions based on a liquid democracy scheme,
+6. The Assembly is the highest governing body of the Association, making decisions based on a liquid democracy scheme,
    which means allowing each participant to either vote independently or to freely delegate and retract his vote. The
    Assembly clarifies goals, approves strategic and medium-term plans (roadmaps), and addresses other issues within the
    legal framework of the Association. All decisions of the Assembly, except those explicitly stated in this Agreement,
@@ -53,7 +53,7 @@ Agreement
    the composition and administration of which are determined by the Council.
 
 
-8. The Council is the executive body of the Association, ensuring the implementation of the Assembly's decisions and
+7. The Council is the executive body of the Association, ensuring the implementation of the Assembly's decisions and
    the Association's operations, including budgeting, personal accounting, blockchain
    multi-signature, and other administrative tasks as stipulated by this Agreement and the decisions of the Assembly.
    The Council serves as the nominal owner and manager of the Association's resources and also acts as the default
@@ -66,7 +66,7 @@ Agreement
    participate in the Council's work with a consultative vote.
 
 
-9. Corporate participants may come into agreement (sealed by decision of the Assembly or the Council) to perform functions
+8. Corporate participants may come into agreement (sealed by decision of the Assembly or the Council) to perform functions
    and/or solve tasks, either on a permanent or project basis, in the interests and on behalf of the Association, including,
    but not limited to, the following:
 
@@ -82,7 +82,7 @@ Agreement
    d) Develop and apply voluntary certification mechanisms, client safety guarantees, and quality control.
 
 
-10. Participation statuses are recorded by the number of participation tokens or special status tokens on the
+9. Participation statuses are recorded by the number of participation tokens or special status tokens on the
    participants' balances and may serve as indicators of their level of verification, involvement in the Association's
    activities, and responsibility for commitments in its legal system. Specifically, the presence of a corresponding
    number of participation or status tokens on a participant's balance corresponds to the following statuses:
