@@ -3,28 +3,27 @@ English version:
 
 File: [Agreement.en.md](Agreement.en.md)
 
-SHA-256: `2a7467b6eba24cd0fb21c21e3f9e061a06e65b0ef72b4b0c5381b851fd1c4dd5`
+SHA-256: `7a28fe7274696f28d4eca380de5234e186a8ff675d25fd2e454a3249721996c4`
 
 Russian version:
 ================
 
 File: [Agreement.ru.md](Agreement.ru.md)
 
-SHA-256: `cf258a8dbb96096f8d8924dbdd403b78f1bafe62c6ddf372827040dbb3c2a684`
+SHA-256: `389264ceb7f93bb354e6739ee8a8f330b5734b7eba2f4f20e6cd354463037093`
 
 Confirmation
 ------------
 
 Assembly:
 
-- [Proposal in the Assembly chat](https://t.me/c/1892843127/7970)
-- [Voting in the Assembly chat](https://t.me/c/1892843127/7968)
+- [Proposal in the Assembly chat](https://t.me/c/1892843127/13884)
+- [Voting in the Assembly chat](https://t.me/c/1892843127/13882)
+- [Completion in the Assembly chat](https://t.me/c/1892843127/13921)
 
 Council:
 
-- [Invitation to sign the transaction](https://t.me/c/2042260878/145)
-- [Multisignature setup](https://eurmtl.me/sign_tools/f18852f0083e55f4e6e9f323243312b9b317abe7c8039a5c83d5bfebee88995e)
-- Transaction: `f18852f0083e55f4e6e9f323243312b9b317abe7c8039a5c83d5bfebee88995e`
-- Operation: `222906762553647105`
-- [StellarExpert](https://stellar.expert/explorer/public/tx/f18852f0083e55f4e6e9f323243312b9b317abe7c8039a5c83d5bfebee88995e)
-- [StellarChain](https://stellarchain.io/operations/222906762553647105)
+- [Invitation to sign the transaction](https://t.me/c/2042260878/621)
+- [Multisignature setup](https://eurmtl.me/sign_tools/c5854c1a1a8ff95c76a0d93f88bddaedfa9f7cec27910b8d909cae535b6e4edf)
+- Transaction: `c5854c1a1a8ff95c76a0d93f88bddaedfa9f7cec27910b8d909cae535b6e4edf`
+- [StellarExpert](https://stellar.expert/explorer/public/tx/c5854c1a1a8ff95c76a0d93f88bddaedfa9f7cec27910b8d909cae535b6e4edf)

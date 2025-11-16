@@ -5,9 +5,9 @@ Agreement
 =========
 
 1. The Montelibero Movement is an open, decentralized community of supporters of the Non-Aggression Principle (NAP),
-   without fixed membership, aiming to transform Montenegro into the most comfortable and safe living and creative space
-   for freedom-loving individuals. This is achieved through legal promotion of practices and technologies that ensure
-   the protection and expansion of personal sovereignty for each resident of Montenegro.
+   without fixed membership, aiming to transform Montenegro, Europe, and the entire world into a comfortable and safe
+   living and creative space for freedom-loving individuals. This is achieved through legal promotion of ideas, norms
+   and practices that ensure the protection and expansion of personal sovereignty for each supporter of the Non-Aggression Principle.
 
 
 2. The Montelibero Association (hereinafter referred to as "the Association") is a structure with fixed membership,
