@@ -6,20 +6,20 @@ Russian version:
 
 File: [StrategyConcept.ru.md](StrategyConcept.ru.md)
 
-SHA-256: `b711bb231c5a7438b1cacf55b434f286bcf1f7f55533f06da628b871ac8fc577`
+SHA-256: `2233784fe509ab6fed891eb7603c05f438356e56115d3cd2a3b7e03d0870b6f1`
 
 Confirmation
 ------------
 
 Assembly:
 
-- [Proposal in the Assembly chat](https://t.me/c/1892843127/12112)
-- [Voting in the Assembly chat](https://t.me/c/1892843127/12110)
-
+- [Proposal in the Assembly chat](https://t.me/c/1892843127/13997)
+- [Voting in the Assembly chat](https://t.me/c/1892843127/13995)
+- [Completion in the Assembly chat](https://t.me/c/1892843127/13999)
 
 Council:
 
-- [Invitation to sign the transaction](https://t.me/c/1944691324/15863)
-- [Multisignature setup](https://eurmtl.me/sign_tools/59f25245a8619d26555184949cd29b8dce6c7502b1eda8c8db3bef4b30d3a2b7)
-- Transaction: `59f25245a8619d26555184949cd29b8dce6c7502b1eda8c8db3bef4b30d3a2b7`
-- [StellarExpert](https://stellar.expert/explorer/public/tx/59f25245a8619d26555184949cd29b8dce6c7502b1eda8c8db3bef4b30d3a2b7)
+- [Invitation to sign the transaction](https://t.me/c/2042260878/686)
+- [Multisignature setup](https://eurmtl.me/sign_tools/a928a67d92bb52f21afa5ed970cfabf5bec2f81bdb4ce5c20070dac77efd5bb8)
+- Transaction: `a928a67d92bb52f21afa5ed970cfabf5bec2f81bdb4ce5c20070dac77efd5bb8`
+- [Viewer](https://viewer.eurmtl.me/transaction/a928a67d92bb52f21afa5ed970cfabf5bec2f81bdb4ce5c20070dac77efd5bb8)
