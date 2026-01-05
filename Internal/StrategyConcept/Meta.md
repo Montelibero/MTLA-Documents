@@ -23,3 +23,4 @@ Council:
 - [Multisignature setup](https://eurmtl.me/sign_tools/a928a67d92bb52f21afa5ed970cfabf5bec2f81bdb4ce5c20070dac77efd5bb8)
 - Transaction: `a928a67d92bb52f21afa5ed970cfabf5bec2f81bdb4ce5c20070dac77efd5bb8`
 - [Viewer](https://viewer.eurmtl.me/transaction/a928a67d92bb52f21afa5ed970cfabf5bec2f81bdb4ce5c20070dac77efd5bb8)
+- [Publication in the Council Herald](https://t.me/mtla_council_herald/81)
