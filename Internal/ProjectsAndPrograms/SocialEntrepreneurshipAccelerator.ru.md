@@ -81,4 +81,4 @@
 ## 9. Ответственный
 
 Куратор @SomeoneAny,
-подрядная организация: Фракция Инвесторов `GACOXYJQEZYODGD4FZPG4PMLJFQXDMFIEHEP7RMQIDELUOR25WV2RICH`.
+подрядная организация: `GCPNLSU52ELIO5JACCEXCXUKOBOHUDDJ3F2AO6SDKJKFLVFH3DAYJSEA`.
