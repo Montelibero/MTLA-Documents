@@ -1,8 +1,16 @@
-# Social Entrepreneurship Accelerator
+# Social Entrepreneurship Accelerator Program
 
-SHA-256: `165b69f3c1bc9328071352c9dc1241c3bb1018a1082bf6f3cdac2b9e8e429ca8`
+File: [SocialEntrepreneurshipAccelerator.ru.md](SocialEntrepreneurshipAccelerator.ru.md)
 
-Accepted by the Council transaction:
-* https://t.me/c/2042260878/379
-* https://eurmtl.me/sign_tools/a1d580130f9f6ad67a94f2b82655ac8d5864e8cecfc41fd8d05f1531e6c9b43e
-* https://stellar.expert/explorer/public/tx/a1d580130f9f6ad67a94f2b82655ac8d5864e8cecfc41fd8d05f1531e6c9b43e
+SHA-256: `c002d092ccb52e8f38997553abf3c006b080cf7f23fb9cc4364d637f01849218`
+
+Confirmation
+------------
+
+The council multi-sign transaction in Stellar blockchain.
+
+- [Invitation to sign the transaction](https://t.me/c/2042260878/704)
+- [Multisignature setup](https://eurmtl.me/sign_tools/b1cfdb00bc4bf01a7c6f967193d4f1f88e25c6dea226b41ad1149fbf94294f9e)
+- Transaction: `b1cfdb00bc4bf01a7c6f967193d4f1f88e25c6dea226b41ad1149fbf94294f9e`
+- [Viewer](https://viewer.eurmtl.me/transaction/b1cfdb00bc4bf01a7c6f967193d4f1f88e25c6dea226b41ad1149fbf94294f9e)
+- [Publication in the Council Herald](https://t.me/mtla_council_herald/88)
