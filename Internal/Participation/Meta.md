@@ -3,11 +3,14 @@ Russian version:
 
 File: [Participation.ru.md](Participation.ru.md)
 
-SHA-256: `c810683a4eb542e847e7e0ba323dc532fbf9cbeeefa1c9826cd42d73ba823c6e`
+SHA-256: `a00fa2ee4fc3a329e1f128a3c3ace6dc1c46ba28337f4dc5192fde46c22ca52c`
+
+## Confirmation
 
 The council multi-sign transaction in Stellar blockchain.
 
-- [Invitation to sign the transaction](https://t.me/c/2042260878/324)
-- [Multisignature setup](https://eurmtl.me/sign_tools/7f0fc91732eb6f4c8140daf2939ca248096b29a1932144adda53aeb094e98849)
-- Transaction: `7f0fc91732eb6f4c8140daf2939ca248096b29a1932144adda53aeb094e98849`
-- [StellarExpert](https://stellar.expert/explorer/public/tx/7f0fc91732eb6f4c8140daf2939ca248096b29a1932144adda53aeb094e98849)
+- [Invitation to sign the transaction](https://t.me/c/2042260878/758)
+- [Multisignature setup](https://eurmtl.me/sign_tools/d2c24b5a395574fc485a099c12f29d3f84c35d402f30febb1f81e52be7e06282)
+- Transaction: `d2c24b5a395574fc485a099c12f29d3f84c35d402f30febb1f81e52be7e06282`
+- [Viewer](https://viewer.eurmtl.me/transaction/d2c24b5a395574fc485a099c12f29d3f84c35d402f30febb1f81e52be7e06282)
+- [Publication in the Council Herald](https://t.me/mtla_council_herald/107)
