@@ -15,3 +15,7 @@ The council multi-sign transaction in Stellar blockchain.
 - Transaction: `2d1ec86bbfc3c757869832f54d1f532aa9d660fb55d80963b8453587465e91ac`
 - [Viewer](https://viewer.eurmtl.me/transaction/2d1ec86bbfc3c757869832f54d1f532aa9d660fb55d80963b8453587465e91ac)
 - [Publication in the Council Herald](https://t.me/mtla_council_herald/99)
+
+## Revocation
+
+The council multi-sign transaction in Stellar blockchain.
