@@ -3,13 +3,14 @@ Country Integration
 
 File: [IntegrationME.ru.md](IntegrationME.ru.md)
 
-SHA-256: `2483a4fca535bfc16662105d72c06ef15726a91570b195144ae4c6284d6bdb9d`
+SHA-256: `9ea293ec98ccb6216370e2cd5d306ae7fe76c8602841983ba408eed3be8a9189`
 
 ## Confirmation
 
-The council multi-sign transaction in Stellar blockchain.
+The Council multi-sign transaction in Stellar blockchain.
 
-- [Invitation to sign the transaction](https://t.me/c/2042260878/353)
-- [Multisignature setup](https://eurmtl.me/sign_tools/497283cdd8c3498f9c56ed86f95e03b44dc0abab2126f289c295a0895d743457)
-- Transaction: `497283cdd8c3498f9c56ed86f95e03b44dc0abab2126f289c295a0895d743457`
-- [StellarExpert](https://stellar.expert/explorer/public/tx/497283cdd8c3498f9c56ed86f95e03b44dc0abab2126f289c295a0895d743457)
+- [Invitation to sign the transaction](https://t.me/c/2042260878/780)
+- [Multisignature setup](https://eurmtl.me/sign_tools/923de04ed2b63ccbccbd8d70a370934737315d966491481e5b8d81da212f9530)
+- Transaction: `923de04ed2b63ccbccbd8d70a370934737315d966491481e5b8d81da212f9530`
+- [Viewer](https://viewer.eurmtl.me/transaction/923de04ed2b63ccbccbd8d70a370934737315d966491481e5b8d81da212f9530)
+- [Publication in the Council Herald](https://t.me/mtla_council_herald/114)
