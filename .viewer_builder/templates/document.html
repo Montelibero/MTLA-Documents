@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="document-layout">
+  <section class="document-meta">
+    {% if document %}
+    <h2 class="document-meta__title">{{ document.filename }}</h2>
+    <dl class="metadata-list">
+      <div>
+        <dt>Fixed in Git</dt>
+        <dd>{{ document.current_committed_at_label }}</dd>
+      </div>
+      <div>
+        <dt>Commit</dt>
+        <dd><a href="{{ document.current_commit_url }}">GitHub</a></dd>
+      </div>
+      <div>
+        <dt>Permanent link</dt>
+        <dd><a href="{{ site_url(document.permanent_snapshot_url) }}">SHA-256 snapshot</a></dd>
+      </div>
+      <div>
+        <dt>Original Markdown</dt>
+        <dd><a href="{{ site_url(document.canonical_md_url) }}">Download .md</a></dd>
+      </div>
+      <div>
+        <dt>History</dt>
+        <dd><a href="{{ site_url(document.history_url) }}">View history</a></dd>
+      </div>
+      {% if document.meta_page %}
+      <div>
+        <dt>Meta</dt>
+        <dd><a href="{{ site_url(document.meta_page.public_url) }}">Open meta page</a></dd>
+      </div>
+      {% endif %}
+      {% if document.language_links %}
+      <div>
+        <dt>Other versions</dt>
+        <dd>
+          {% for language, url in document.language_links %}
+          <a href="{{ site_url(url) }}">{{ language }}</a>{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </dd>
+      </div>
+      {% endif %}
+    </dl>
+    {% else %}
+    <h2 class="document-meta__title">{{ snapshot.canonical_filename }}</h2>
+    <dl class="metadata-list">
+      <div>
+        <dt>Version type</dt>
+        <dd>Historical snapshot</dd>
+      </div>
+      <div>
+        <dt>Fixed in Git</dt>
+        <dd>{{ snapshot.committed_at_label }}</dd>
+      </div>
+      <div>
+        <dt>Commit</dt>
+        <dd><a href="{{ snapshot.commit_url }}">GitHub</a></dd>
+      </div>
+      <div>
+        <dt>Canonical page</dt>
+        <dd><a href="{{ site_url(snapshot.canonical_url) }}">Latest version</a></dd>
+      </div>
+      <div>
+        <dt>Original Markdown</dt>
+        <dd><a href="{{ site_url(snapshot.public_md_url) }}">Download .md</a></dd>
+      </div>
+    </dl>
+    {% endif %}
+  </section>
+
+  <section class="document-body markdown-body">
+    {{ body_html | safe }}
+  </section>
+</article>
+{% endblock %}

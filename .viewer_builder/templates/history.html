@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <header class="panel__header">
+    <h2>{{ document.filename }} history</h2>
+  </header>
+  <ol class="history-list">
+    {% for entry in document.history %}
+    <li>
+      <a href="{{ site_url(entry.public_html_url) }}">{{ entry.committed_at_label }}</a>
+      <a class="history-list__commit" href="{{ entry.commit_url }}">GitHub</a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}

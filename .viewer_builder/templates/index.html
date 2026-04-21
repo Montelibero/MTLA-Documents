@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="index-layout">
+  {% if readme_html %}
+  <section class="panel markdown-body">
+    {{ readme_html | safe }}
+  </section>
+  {% endif %}
+
+  {% if page.directory_entries %}
+  <section class="panel">
+    <h2>Directories</h2>
+    <ul class="entry-list">
+      {% for entry in page.directory_entries %}
+      <li><a href="{{ site_url(entry.url) }}">{{ entry.label }}/</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="panel">
+    <h2>Documents</h2>
+    {% if page.document_entries %}
+    <ul class="entry-list">
+      {% for entry in page.document_entries %}
+      <li>
+        <a href="{{ site_url(entry.url) }}">{{ entry.label }}</a>
+        <span class="entry-list__date">{{ entry.modified_at_label }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-state">No direct documents in this directory.</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

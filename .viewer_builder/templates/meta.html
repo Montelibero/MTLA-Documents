@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="document-layout">
+  <section class="document-meta">
+    <h2 class="document-meta__title">{{ meta_page.filename }}</h2>
+    <p class="document-meta__note">Meta information page.</p>
+  </section>
+  <section class="document-body markdown-body">
+    {{ body_html | safe }}
+  </section>
+</article>
+{% endblock %}

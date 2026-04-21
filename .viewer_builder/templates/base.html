@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page_title }}</title>
+  <link rel="stylesheet" href="{{ site_url('/assets/site.css') }}">
+</head>
+<body class="{{ body_class }}">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <h1 class="site-header__title">
+        <a href="{{ site_url('/') }}">
+          <span class="site-header__title-line">Montelibero Association</span>
+          <span class="site-header__title-line">Document Storage</span>
+        </a>
+      </h1>
+      <p class="site-header__subtitle">{{ section_title }}</p>
+      {% if breadcrumbs %}
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <ol>
+          {% for crumb in breadcrumbs %}
+          <li>
+            {% if crumb.url %}
+            <a href="{{ site_url(crumb.url) }}">{{ crumb.label }}</a>
+            {% else %}
+            <span>{{ crumb.label }}</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+      </nav>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if print_header %}
+  <section class="print-header" aria-hidden="true">
+    <p class="print-header__project">{{ print_header.project_title }}</p>
+    <p class="print-header__path">{{ print_header.path }}</p>
+    <hr>
+  </section>
+  {% endif %}
+
+  <main class="page-shell">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
