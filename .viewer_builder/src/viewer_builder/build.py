@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
+import json
 import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -21,6 +22,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
+from PIL import Image
 
 
 LOGGER = logging.getLogger("viewer_builder")
@@ -516,6 +518,58 @@ def copy_root_extras(repo_root: Path, config: Config) -> None:
         shutil.copy2(llms_source, config.output_dir / "llms.txt")
 
 
+def generate_favicons(repo_root: Path, config: Config) -> None:
+    source_logo = repo_root / ".viewer_builder" / "assets" / "branding" / "fspe_logo.png"
+    if not source_logo.exists():
+        return
+
+    favicon_specs = {
+        "favicon-16x16.png": (16, 16),
+        "favicon-32x32.png": (32, 32),
+        "apple-touch-icon.png": (180, 180),
+        "android-chrome-192x192.png": (192, 192),
+        "android-chrome-512x512.png": (512, 512),
+    }
+
+    base_image = Image.open(source_logo).convert("RGBA")
+    for filename, size in favicon_specs.items():
+        resized = base_image.resize(size, Image.Resampling.LANCZOS)
+        resized.save(config.output_dir / filename)
+
+    icon_sizes = [(16, 16), (32, 32), (48, 48)]
+    ico_frames = [base_image.resize(size, Image.Resampling.LANCZOS) for size in icon_sizes]
+    ico_frames[0].save(
+        config.output_dir / "favicon.ico",
+        format="ICO",
+        append_images=ico_frames[1:],
+        sizes=icon_sizes,
+    )
+
+    manifest = {
+        "name": config.site_title,
+        "short_name": "MTLA Files",
+        "icons": [
+            {
+                "src": site_url(config, "/android-chrome-192x192.png"),
+                "sizes": "192x192",
+                "type": "image/png",
+            },
+            {
+                "src": site_url(config, "/android-chrome-512x512.png"),
+                "sizes": "512x512",
+                "type": "image/png",
+            },
+        ],
+        "theme_color": "#121313",
+        "background_color": "#121313",
+        "display": "standalone",
+    }
+    (config.output_dir / "site.webmanifest").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
 def ensure_parent(path_value: Path) -> None:
     path_value.parent.mkdir(parents=True, exist_ok=True)
 
@@ -684,6 +738,7 @@ def main(argv: list[str] | None = None) -> int:
 
     copy_assets(repo_root, config)
     copy_root_extras(repo_root, config)
+    generate_favicons(repo_root, config)
 
     for document in documents:
         body_html = markdown_renderer.render(document.current_bytes.decode("utf-8", errors="replace"), document.repo_path)
