@@ -407,9 +407,10 @@ class MarkdownRenderer:
     def __init__(self, config: Config, public_lookup: dict[str, str]):
         self.config = config
         self.public_lookup = public_lookup
-        self.markdown = MarkdownIt("commonmark", {"html": True, "linkify": False})
+        self.markdown = MarkdownIt("commonmark", {"html": True, "linkify": True})
         self.markdown.enable("table")
         self.markdown.enable("strikethrough")
+        self.markdown.enable("linkify")
 
     def render(self, markdown_text: str, current_repo_path: str) -> str:
         tokens = self.markdown.parse(markdown_text)
