@@ -411,6 +411,8 @@ class MarkdownRenderer:
         self.markdown.enable("table")
         self.markdown.enable("strikethrough")
         self.markdown.enable("linkify")
+        if self.markdown.linkify is not None:
+            self.markdown.linkify.set({"fuzzy_link": False, "fuzzy_email": False})
 
     def render(self, markdown_text: str, current_repo_path: str) -> str:
         tokens = self.markdown.parse(markdown_text)
