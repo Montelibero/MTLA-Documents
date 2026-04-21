@@ -510,6 +510,12 @@ def copy_assets(repo_root: Path, config: Config) -> None:
     shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
 
 
+def copy_root_extras(repo_root: Path, config: Config) -> None:
+    llms_source = repo_root / ".viewer_builder" / "llms.txt"
+    if llms_source.exists():
+        shutil.copy2(llms_source, config.output_dir / "llms.txt")
+
+
 def ensure_parent(path_value: Path) -> None:
     path_value.parent.mkdir(parents=True, exist_ok=True)
 
@@ -677,6 +683,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     copy_assets(repo_root, config)
+    copy_root_extras(repo_root, config)
 
     for document in documents:
         body_html = markdown_renderer.render(document.current_bytes.decode("utf-8", errors="replace"), document.repo_path)
