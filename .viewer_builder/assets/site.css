@@ -25,6 +25,35 @@
     --accent-soft: rgba(255, 154, 108, 0.12);
     --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   }
+
+  .status-chip--success {
+    border-color: rgba(97, 204, 122, 0.36);
+    background: rgba(59, 150, 79, 0.22);
+    color: #96e8a6;
+  }
+
+  .status-chip--notice {
+    border-color: rgba(116, 175, 255, 0.28);
+    background: rgba(60, 121, 214, 0.2);
+    color: #9fc8ff;
+  }
+
+  .status-chip--warning {
+    border-color: rgb(148 73 4 / 83%);
+    background: rgb(67 47 27 / 38%);
+    color: #b35400;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at top left, rgba(184, 108, 58, 0.13), transparent 36%),
+      radial-gradient(circle at bottom right, rgba(64, 112, 95, 0.1), transparent 30%),
+      var(--bg);
+  }
+
+  .site-header {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
+  }
 }
 
 * {
@@ -157,6 +186,46 @@ a:hover {
 .document-meta__title {
   margin: 0 0 1rem;
   font-size: 1.15rem;
+}
+
+.status-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.28rem 0.68rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.status-chip--success {
+  border-color: rgba(61, 136, 76, 0.45);
+  background: rgba(61, 136, 76, 0.16);
+  color: #1f6f32;
+}
+
+.status-chip--notice {
+  border-color: rgba(41, 105, 176, 0.35);
+  background: rgba(41, 105, 176, 0.12);
+  color: #1b5fb8;
+}
+
+.status-chip--warning {
+  border-color: rgba(140, 84, 33, 0.4);
+  background: rgba(180, 108, 35, 0.16);
+  color: #7b3d06;
 }
 
 .document-meta__note {

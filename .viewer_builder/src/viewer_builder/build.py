@@ -166,6 +166,7 @@ class SnapshotPage:
     commit_url: str
     committed_at_label: str
     source_repo_path_at_commit: str
+    status_badges: list[dict[str, str]] = field(default_factory=list)
 
     @property
     def public_html_url(self) -> str:
@@ -506,6 +507,10 @@ def build_breadcrumbs_for_meta(site_dir_rel_path: str, filename: str) -> list[di
     return breadcrumbs
 
 
+def make_status_badge(label: str, tone: str) -> dict[str, str]:
+    return {"label": label, "tone": tone}
+
+
 def copy_assets(repo_root: Path, config: Config) -> None:
     source_dir = repo_root / ".viewer_builder" / "assets"
     target_dir = config.output_dir / "assets"
@@ -692,6 +697,10 @@ def main(argv: list[str] | None = None) -> int:
     def register_snapshot(document: Document, sha256: str, body: bytes, commit_sha: str, commit_url: str, committed_at_label: str, repo_path_at_commit: str) -> None:
         existing = snapshots.get(sha256)
         if existing is not None:
+            if sha256 == document.current_sha256:
+                labels = {badge["label"] for badge in existing.status_badges}
+                if "Current version" not in labels:
+                    existing.status_badges.append(make_status_badge("Current version", "success"))
             if existing.commit_sha != commit_sha or existing.canonical_url != document.canonical_html_url:
                 LOGGER.warning(
                     "SHA collision for %s: keeping %s @ %s, ignoring %s @ %s",
@@ -713,6 +722,11 @@ def main(argv: list[str] | None = None) -> int:
             commit_url=commit_url,
             committed_at_label=committed_at_label,
             source_repo_path_at_commit=repo_path_at_commit,
+            status_badges=[
+                make_status_badge("Current version", "success")
+                if sha256 == document.current_sha256
+                else make_status_badge("Historical version", "warning")
+            ],
         )
 
     for document in documents:
@@ -749,6 +763,7 @@ def main(argv: list[str] | None = None) -> int:
             "breadcrumbs": breadcrumbs,
             "body_class": "page-document",
             "document": document,
+            "status_badges": [make_status_badge("Current version", "success")],
             "body_html": body_html,
             "print_header": {
                 "project_title": config.site_title,
@@ -791,6 +806,7 @@ def main(argv: list[str] | None = None) -> int:
                 "breadcrumbs": breadcrumbs,
                 "body_class": "page-document page-snapshot",
                 "snapshot": snapshot,
+                "status_badges": snapshot.status_badges,
                 "body_html": body_html,
                 "print_header": {
                     "project_title": config.site_title,

@@ -5,6 +5,13 @@
   <section class="document-meta">
     {% if document %}
     <h2 class="document-meta__title">{{ document.filename }}</h2>
+    {% if status_badges %}
+    <div class="status-chips" aria-label="Document status">
+      {% for badge in status_badges %}
+      <span class="status-chip status-chip--{{ badge.tone }}">{{ badge.label }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
     <dl class="metadata-list">
       <div>
         <dt>Fixed in Git</dt>
@@ -45,6 +52,13 @@
     </dl>
     {% else %}
     <h2 class="document-meta__title">{{ snapshot.canonical_filename }}</h2>
+    {% if status_badges %}
+    <div class="status-chips" aria-label="Document status">
+      {% for badge in status_badges %}
+      <span class="status-chip status-chip--{{ badge.tone }}">{{ badge.label }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
     <dl class="metadata-list">
       <div>
         <dt>Version type</dt>
