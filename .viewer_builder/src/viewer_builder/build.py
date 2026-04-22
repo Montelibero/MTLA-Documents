@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
 import logging
 import os
@@ -18,6 +20,8 @@ from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 from urllib.parse import quote, unquote, urlsplit
+from urllib.error import URLError
+from urllib.request import urlopen
 
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -30,6 +34,7 @@ LOGGER = logging.getLogger("viewer_builder")
 COMMIT_MARKER = "__COMMIT__"
 LANGUAGE_RE = re.compile(r"^(?P<stem>.+)\.(?P<lang>[A-Za-z0-9_-]+)\.md$")
 SNAPSHOTS_DIR = "snapshots"
+NOTARIZATION_ACCOUNT_URL = "https://horizon.stellar.org/accounts/GCNVDZIHGX473FEI7IXCUAEXUJ4BGCKEMHF36VYP5EMS7PX2QBLAMTLA"
 
 
 @dataclass
@@ -877,6 +882,32 @@ def make_status_badge(label: str, tone: str) -> dict[str, str]:
     return {"label": label, "tone": tone}
 
 
+def add_status_badge(badges: list[dict[str, str]], label: str, tone: str) -> None:
+    if any(badge["label"] == label for badge in badges):
+        return
+    badges.append(make_status_badge(label, tone))
+
+
+def fetch_notarized_hashes(timeout_seconds: int = 10) -> set[str]:
+    try:
+        with urlopen(NOTARIZATION_ACCOUNT_URL, timeout=timeout_seconds) as response:
+            payload = json.load(response)
+    except (TimeoutError, URLError, OSError, json.JSONDecodeError) as error:
+        LOGGER.warning("Unable to fetch notarization data from Stellar Horizon: %s", error)
+        return set()
+
+    notarized_hashes: set[str] = set()
+    for key, encoded_value in (payload.get("data") or {}).items():
+        try:
+            decoded = base64.b64decode(encoded_value).decode("utf-8").strip()
+        except (binascii.Error, UnicodeDecodeError) as error:
+            LOGGER.warning("Unable to decode notarization data field %s: %s", key, error)
+            continue
+        if re.fullmatch(r"[0-9a-fA-F]{64}", decoded):
+            notarized_hashes.add(decoded.lower())
+    return notarized_hashes
+
+
 def copy_assets(repo_root: Path, config: Config) -> None:
     source_dir = repo_root / ".viewer_builder" / "assets"
     target_dir = config.output_dir / "assets"
@@ -1018,6 +1049,7 @@ def main(argv: list[str] | None = None) -> int:
 
     repo_root = Path(__file__).resolve().parents[3]
     config = load_config(repo_root, args.output_dir)
+    notarized_hashes = fetch_notarized_hashes()
 
     if config.output_dir.exists():
         shutil.rmtree(config.output_dir)
@@ -1117,9 +1149,9 @@ def main(argv: list[str] | None = None) -> int:
         existing = snapshots.get(sha256)
         if existing is not None:
             if sha256 == document.current_sha256:
-                labels = {badge["label"] for badge in existing.status_badges}
-                if "Current version" not in labels:
-                    existing.status_badges.append(make_status_badge("Current version", "success"))
+                add_status_badge(existing.status_badges, "Current version", "success")
+            if sha256 in notarized_hashes:
+                add_status_badge(existing.status_badges, "Notarized", "notarized")
             if existing.commit_sha != commit_sha or existing.canonical_url != document.canonical_html_url:
                 LOGGER.warning(
                     "SHA collision for %s: keeping %s @ %s, ignoring %s @ %s",
@@ -1142,12 +1174,14 @@ def main(argv: list[str] | None = None) -> int:
             committed_at_label=committed_at_label,
             committed_at_iso=committed_at_iso,
             source_repo_path_at_commit=repo_path_at_commit,
-            status_badges=[
-                make_status_badge("Current version", "success")
+            status_badges=(
+                [make_status_badge("Current version", "success")]
                 if sha256 == document.current_sha256
-                else make_status_badge("Historical version", "warning")
-            ],
+                else [make_status_badge("Historical version", "warning")]
+            ),
         )
+        if sha256 in notarized_hashes:
+            add_status_badge(snapshots[sha256].status_badges, "Notarized", "notarized")
 
     for document in documents:
         for entry in document.history:
@@ -1191,7 +1225,12 @@ def main(argv: list[str] | None = None) -> int:
             "breadcrumbs": breadcrumbs,
             "body_class": "page-document",
             "document": document,
-            "status_badges": [make_status_badge("Current version", "success")],
+            "has_notarized_stamp": document.current_sha256 in notarized_hashes,
+            "status_badges": (
+                [make_status_badge("Current version", "success"), make_status_badge("Notarized", "notarized")]
+                if document.current_sha256 in notarized_hashes
+                else [make_status_badge("Current version", "success")]
+            ),
             "contents": contents if heading_count > 2 else [],
             "body_html": body_html,
             "print_header": {
@@ -1250,6 +1289,7 @@ def main(argv: list[str] | None = None) -> int:
                 "breadcrumbs": breadcrumbs,
                 "body_class": "page-document page-snapshot",
                 "snapshot": snapshot,
+                "has_notarized_stamp": any(badge["label"] == "Notarized" for badge in snapshot.status_badges),
                 "status_badges": snapshot.status_badges,
                 "contents": contents if heading_count > 2 else [],
                 "body_html": body_html,

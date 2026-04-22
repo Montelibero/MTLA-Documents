@@ -32,6 +32,12 @@
     color: #96e8a6;
   }
 
+  .status-chip--notarized {
+    border-color: rgba(74, 181, 108, 0.42);
+    background: rgba(37, 109, 61, 0.28);
+    color: #7fe39b;
+  }
+
   .status-chip--notice {
     border-color: rgba(116, 175, 255, 0.28);
     background: rgba(60, 121, 214, 0.2);
@@ -53,6 +59,10 @@
 
   .site-header {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
+  }
+
+  .document-notar-stamp__image {
+    opacity: 0.31;
   }
 }
 
@@ -179,6 +189,16 @@ a:hover {
   gap: 1rem;
 }
 
+.document-body {
+  position: relative;
+  overflow: hidden;
+}
+
+.document-body > * {
+  position: relative;
+  z-index: 1;
+}
+
 .document-meta {
   order: 2;
   position: sticky;
@@ -218,6 +238,12 @@ a:hover {
   border-color: rgba(61, 136, 76, 0.45);
   background: rgba(61, 136, 76, 0.16);
   color: #1f6f32;
+}
+
+.status-chip--notarized {
+  border-color: rgba(42, 130, 73, 0.42);
+  background: rgba(42, 130, 73, 0.12);
+  color: #1b7f42;
 }
 
 .status-chip--notice {
@@ -267,6 +293,32 @@ a:hover {
 .document-contents h2 {
   margin: 0 0 0.85rem;
   font-size: 1rem;
+}
+
+.document-notar-stamp {
+  position: absolute;
+  top: -2rem;
+  right: -2rem;
+  z-index: 3;
+  width: clamp(9.5rem, 22vw, 14rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.document-notar-stamp__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.60;
+  transform: rotate(30deg);
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: brightness(3) saturate(0.5);
 }
 
 .contents-tree,
@@ -587,6 +639,7 @@ a:hover {
   .site-header,
   .document-meta,
   .document-contents,
+  .document-notar-stamp,
   .panel:not(.markdown-body),
   .breadcrumbs,
   .history-list__commit,

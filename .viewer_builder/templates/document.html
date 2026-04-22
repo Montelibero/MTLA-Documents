@@ -106,6 +106,16 @@
     {% endif %}
 
     <section class="document-body markdown-body">
+      {% if has_notarized_stamp %}
+      <div class="document-notar-stamp" aria-hidden="true">
+        <img
+          class="document-notar-stamp__image"
+          src="{{ site_url('/assets/mtla_notar_stamp.png') }}"
+          alt=""
+          draggable="false"
+        >
+      </div>
+      {% endif %}
       {{ body_html | safe }}
     </section>
   </div>
