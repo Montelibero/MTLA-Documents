@@ -35,6 +35,7 @@ SNAPSHOTS_DIR = "snapshots"
 class Config:
     site_title: str
     repo_commit_base_url: str
+    site_origin: str
     site_base_path: str
     output_dir: Path
 
@@ -256,6 +257,7 @@ def load_config(repo_root: Path, output_override: str | None) -> Config:
     return Config(
         site_title=str(raw["site_title"]),
         repo_commit_base_url=str(raw["repo_commit_base_url"]).rstrip("/"),
+        site_origin=str(raw.get("site_origin", "https://montelibero.github.io")).rstrip("/"),
         site_base_path=str(raw.get("site_base_path", "") or "").rstrip("/"),
         output_dir=(repo_root / output_dir).resolve(),
     )
@@ -265,6 +267,10 @@ def site_url(config: Config, public_url: str) -> str:
     if public_url == "/":
         return f"{config.site_base_path}/" if config.site_base_path else "/"
     return f"{config.site_base_path}{public_url}" if config.site_base_path else public_url
+
+
+def absolute_site_url(config: Config, public_url: str) -> str:
+    return f"{config.site_origin}{site_url(config, public_url)}"
 
 
 def output_path_for_relative(output_root: Path, relative_path: str) -> Path:
@@ -773,6 +779,37 @@ def write_robots_txt(config: Config) -> None:
     (config.output_dir / "robots.txt").write_text(robots_body, encoding="utf-8")
 
 
+def write_sitemap_xml(config: Config, directory_pages: list[DirectoryPage], documents: list[Document], meta_pages: dict[str, MetaPage]) -> None:
+    urls: list[str] = []
+    seen: set[str] = set()
+
+    def add_url(public_url: str) -> None:
+        absolute_url = absolute_site_url(config, public_url)
+        if absolute_url in seen:
+            return
+        seen.add(absolute_url)
+        urls.append(absolute_url)
+
+    for page in sorted(directory_pages, key=lambda item: item.public_url):
+        add_url(page.public_url)
+    for document in sorted(documents, key=lambda item: item.canonical_html_url):
+        add_url(document.canonical_html_url)
+        add_url(document.history_url)
+    for meta_page in sorted(meta_pages.values(), key=lambda item: item.public_url):
+        add_url(meta_page.public_url)
+
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for url in urls:
+        xml_lines.append("  <url>")
+        xml_lines.append(f"    <loc>{url}</loc>")
+        xml_lines.append("  </url>")
+    xml_lines.append("</urlset>")
+    (config.output_dir / "sitemap.xml").write_text("\n".join(xml_lines) + "\n", encoding="utf-8")
+
+
 def ensure_parent(path_value: Path) -> None:
     path_value.parent.mkdir(parents=True, exist_ok=True)
 
@@ -1128,6 +1165,7 @@ def main(argv: list[str] | None = None) -> int:
 
     write_data_json(config, documents, snapshots)
     write_search_index(config, search_documents)
+    write_sitemap_xml(config, directory_pages, documents, meta_pages)
 
     LOGGER.info("Generated %s documents", len(documents))
     LOGGER.info("Generated %s historical snapshots", len(snapshots))

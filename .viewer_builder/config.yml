@@ -1,4 +1,5 @@
 site_title: "Montelibero Association Document Storage"
 repo_commit_base_url: "https://github.com/Montelibero/MTLA-Documents/commit"
+site_origin: "https://docs.mtla.me"
 site_base_path: "/"
 output_dir: ".viewer_builder/.output/site"
