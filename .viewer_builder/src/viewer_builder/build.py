@@ -14,6 +14,7 @@ import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 from urllib.parse import quote, unquote, urlsplit
@@ -200,6 +201,14 @@ class SearchDocument:
     headings: list[dict[str, str | int]]
 
 
+@dataclass
+class PageMeta:
+    title: str
+    description: str
+    canonical_url: str
+    og_type: str
+
+
 def replace_markdown_extension(path_value: str, new_suffix: str) -> str:
     if not path_value.endswith(".md"):
         raise ValueError(f"Not a markdown path: {path_value}")
@@ -271,6 +280,19 @@ def site_url(config: Config, public_url: str) -> str:
 
 def absolute_site_url(config: Config, public_url: str) -> str:
     return f"{config.site_origin}{site_url(config, public_url)}"
+
+
+class HTMLTextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        if data:
+            self.parts.append(data)
+
+    def get_text(self) -> str:
+        return " ".join(self.parts)
 
 
 def output_path_for_relative(output_root: Path, relative_path: str) -> Path:
@@ -582,6 +604,148 @@ def canonical_data_key(site_rel_path: str) -> str:
 def build_history_hashes(document: Document) -> list[str]:
     start_index = 1 if document.history and document.history[0].sha256 == document.current_sha256 else 0
     return [entry.sha256 for entry in document.history[start_index:]]
+
+
+def normalize_space(value: str) -> str:
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def plain_text_from_html(html_value: str) -> str:
+    parser = HTMLTextExtractor()
+    parser.feed(html_value)
+    parser.close()
+    return normalize_space(parser.get_text())
+
+
+def trim_leading_heading(text: str, heading: str) -> str:
+    normalized_text = normalize_space(text)
+    normalized_heading = normalize_space(heading)
+    if not normalized_heading:
+        return normalized_text
+    lowered_text = normalized_text.casefold()
+    lowered_heading = normalized_heading.casefold()
+    if lowered_text.startswith(lowered_heading):
+        trimmed = normalized_text[len(normalized_heading):].lstrip(" .:-\u2014\u2013")
+        return normalize_space(trimmed)
+    return normalized_text
+
+
+def truncate_on_word_boundary(text: str, max_length: int = 220) -> str:
+    normalized = normalize_space(text)
+    if len(normalized) <= max_length:
+        return normalized
+    truncated = normalized[: max_length + 1]
+    boundary = truncated.rfind(" ")
+    if boundary < max_length * 0.6:
+        boundary = max_length
+    return normalized[:boundary].rstrip(" ,;:-") + "..."
+
+
+def display_title_from_h1(filename: str, h1: str) -> str:
+    heading = normalize_space(h1)
+    if not heading:
+        return filename
+    if heading == filename:
+        return filename
+    return f"{heading} - {filename}"
+
+
+def directory_display_title(site_dir_rel_path: str, site_title: str) -> str:
+    normalized = site_dir_rel_path.strip("/")
+    if not normalized:
+        return site_title
+    return " / ".join(normalized.split("/"))
+
+
+def summarize_directory_entities(page: DirectoryPage, max_items: int = 6) -> str:
+    items = [entry.label + "/" for entry in page.directory_entries]
+    items.extend(entry.label for entry in page.document_entries)
+    if not items:
+        return ""
+    preview = ", ".join(items[:max_items])
+    if len(items) > max_items:
+        preview += ", ..."
+    return f"Contains: {preview}"
+
+
+def make_page_meta(title: str, description: str, canonical_url: str, og_type: str = "website") -> PageMeta:
+    return PageMeta(
+        title=title,
+        description=truncate_on_word_boundary(description),
+        canonical_url=canonical_url,
+        og_type=og_type,
+    )
+
+
+def build_document_page_meta(config: Config, document: Document, body_html: str, h1: str) -> PageMeta:
+    excerpt_source = trim_leading_heading(plain_text_from_html(body_html), h1)
+    fallback = f"Current version of {document.filename} in Montelibero Association document storage."
+    description = excerpt_source or fallback
+    return make_page_meta(
+        title=display_title_from_h1(document.filename, h1),
+        description=description,
+        canonical_url=absolute_site_url(config, document.canonical_html_url),
+        og_type="article",
+    )
+
+
+def build_snapshot_page_meta(config: Config, snapshot: SnapshotPage, body_html: str, h1: str) -> PageMeta:
+    excerpt_source = trim_leading_heading(plain_text_from_html(body_html), h1)
+    description = f"Historical snapshot of {snapshot.canonical_filename}. {excerpt_source}".strip()
+    return make_page_meta(
+        title=f"Historical snapshot of {display_title_from_h1(snapshot.canonical_filename, h1)}",
+        description=description,
+        canonical_url=absolute_site_url(config, snapshot.public_html_url),
+        og_type="article",
+    )
+
+
+def build_history_page_meta(config: Config, document: Document, h1: str) -> PageMeta:
+    display_title = display_title_from_h1(document.filename, h1)
+    return make_page_meta(
+        title=f"Version history - {display_title}",
+        description=f"Version history for {document.filename}.",
+        canonical_url=absolute_site_url(config, document.history_url),
+        og_type="website",
+    )
+
+
+def build_meta_page_meta(config: Config, meta_page: MetaPage, body_html: str) -> PageMeta:
+    excerpt_source = plain_text_from_html(body_html)
+    description = excerpt_source or f"Meta information for {meta_page.filename}."
+    return make_page_meta(
+        title=f"Meta - {meta_page.filename}",
+        description=description,
+        canonical_url=absolute_site_url(config, meta_page.public_url),
+        og_type="website",
+    )
+
+
+def build_directory_page_meta(config: Config, page: DirectoryPage, readme_html: str) -> PageMeta:
+    title = directory_display_title(page.site_dir_rel_path, config.site_title)
+    readme_excerpt = plain_text_from_html(readme_html) if readme_html else ""
+    entity_summary = summarize_directory_entities(page)
+    if title == config.site_title:
+        base_description = "Current and historical documents of the Montelibero Association and related external files."
+    else:
+        base_description = title
+    parts = [base_description]
+    if entity_summary:
+        parts.append(entity_summary)
+    if readme_excerpt:
+        parts.append(readme_excerpt)
+    return make_page_meta(
+        title=title,
+        description=" ".join(part for part in parts if part),
+        canonical_url=absolute_site_url(config, page.public_url),
+        og_type="website",
+    )
+
+
+def browser_page_title(meta: PageMeta, site_title: str) -> str:
+    if meta.title == site_title:
+        return site_title
+    return f"{meta.title} - {site_title}"
 
 
 def write_data_json(config: Config, documents: list[Document], snapshots: dict[str, SnapshotPage]) -> None:
@@ -1005,10 +1169,16 @@ def main(argv: list[str] | None = None) -> int:
     generate_favicons(repo_root, config)
 
     for document in documents:
-        body_html, contents, heading_count = markdown_renderer.render(document.current_bytes.decode("utf-8", errors="replace"), document.repo_path)
+        markdown_text = document.current_bytes.decode("utf-8", errors="replace")
+        headings = markdown_renderer.extract_headings(markdown_text)
+        h1 = next((heading.text for heading in headings if heading.level == 1 and heading.text), "")
+        body_html, contents, heading_count = markdown_renderer.render(markdown_text, document.repo_path)
+        page_meta = build_document_page_meta(config, document, body_html, h1)
+        history_page_meta = build_history_page_meta(config, document, h1)
         breadcrumbs = build_breadcrumbs_for_path(document.site_rel_path, is_directory=False, final_label=document.filename)
         context = {
-            "page_title": f"{document.filename} - {config.site_title}",
+            "page_title": browser_page_title(page_meta, config.site_title),
+            "page_meta": page_meta,
             "section_title": document.section_title,
             "breadcrumbs": breadcrumbs,
             "body_class": "page-document",
@@ -1036,7 +1206,8 @@ def main(argv: list[str] | None = None) -> int:
             "history.html",
             output_path_for_relative(config.output_dir, document.history_rel_path),
             {
-                "page_title": f"{document.filename} History - {config.site_title}",
+                "page_title": browser_page_title(history_page_meta, config.site_title),
+                "page_meta": history_page_meta,
                 "section_title": document.section_title,
                 "breadcrumbs": breadcrumbs,
                 "body_class": "page-history",
@@ -1045,14 +1216,19 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     for snapshot in snapshots.values():
-        body_html, contents, heading_count = markdown_renderer.render(snapshot.body.decode("utf-8", errors="replace"), snapshot.source_repo_path_at_commit)
+        markdown_text = snapshot.body.decode("utf-8", errors="replace")
+        headings = markdown_renderer.extract_headings(markdown_text)
+        h1 = next((heading.text for heading in headings if heading.level == 1 and heading.text), "")
+        body_html, contents, heading_count = markdown_renderer.render(markdown_text, snapshot.source_repo_path_at_commit)
+        page_meta = build_snapshot_page_meta(config, snapshot, body_html, h1)
         breadcrumbs = build_breadcrumbs_for_path(snapshot.breadcrumb_site_rel, is_directory=False, final_label=snapshot.canonical_filename)
         render_template(
             environment,
             "document.html",
             output_path_for_relative(config.output_dir, snapshot_rel_path(snapshot.sha256, ".html")),
             {
-                "page_title": f"{snapshot.canonical_filename} Snapshot - {config.site_title}",
+                "page_title": browser_page_title(page_meta, config.site_title),
+                "page_meta": page_meta,
                 "section_title": snapshot.section_title,
                 "breadcrumbs": breadcrumbs,
                 "body_class": "page-document page-snapshot",
@@ -1126,13 +1302,15 @@ def main(argv: list[str] | None = None) -> int:
         if page.readme_repo_path:
             readme_bytes = (repo_root / page.readme_repo_path).read_bytes()
             readme_html, _, _ = markdown_renderer.render(readme_bytes.decode("utf-8", errors="replace"), page.readme_repo_path)
+        page_meta = build_directory_page_meta(config, page, readme_html)
         breadcrumbs = build_breadcrumbs_for_path(page.site_dir_rel_path, is_directory=True, final_label=page.title)
         render_template(
             environment,
             "index.html",
             output_path_for_directory(config.output_dir, page.site_dir_rel_path),
             {
-                "page_title": f"{page.title} - {config.site_title}",
+                "page_title": browser_page_title(page_meta, config.site_title),
+                "page_meta": page_meta,
                 "section_title": page.section_title,
                 "breadcrumbs": breadcrumbs,
                 "body_class": "page-index",
@@ -1147,6 +1325,7 @@ def main(argv: list[str] | None = None) -> int:
             (repo_root / meta_page.repo_path).read_text(encoding="utf-8"),
             meta_page.repo_path,
         )
+        page_meta = build_meta_page_meta(config, meta_page, body_html)
         site_dir_rel = site_rel_from_repo_path(str(PurePosixPath(meta_page.repo_path).parent))
         breadcrumbs = build_breadcrumbs_for_meta(site_dir_rel, meta_page.filename)
         render_template(
@@ -1154,7 +1333,8 @@ def main(argv: list[str] | None = None) -> int:
             "meta.html",
             output_path_for_relative(config.output_dir, meta_page.site_rel_path),
             {
-            "page_title": f"{meta_page.filename} - {config.site_title}",
+                "page_title": browser_page_title(page_meta, config.site_title),
+                "page_meta": page_meta,
                 "section_title": "External Files" if meta_page.source_root == "External" else "Association Files",
                 "breadcrumbs": breadcrumbs,
                 "body_class": "page-meta",

@@ -4,6 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page_title }}</title>
+  {% if page_meta %}
+  <meta name="description" content="{{ page_meta.description }}">
+  <link rel="canonical" href="{{ page_meta.canonical_url }}">
+  <meta property="og:title" content="{{ page_meta.title }}">
+  <meta property="og:description" content="{{ page_meta.description }}">
+  <meta property="og:url" content="{{ page_meta.canonical_url }}">
+  <meta property="og:type" content="{{ page_meta.og_type }}">
+  <meta property="og:site_name" content="{{ site_title }}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ page_meta.title }}">
+  <meta name="twitter:description" content="{{ page_meta.description }}">
+  {% endif %}
   <link rel="icon" href="{{ site_url('/favicon.ico') }}" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ site_url('/favicon-32x32.png') }}">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ site_url('/favicon-16x16.png') }}">
