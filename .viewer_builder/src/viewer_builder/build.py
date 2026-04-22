@@ -115,6 +115,14 @@ class Document:
         return to_public_url(self.site_rel_path)
 
     @property
+    def clear_html_rel_path(self) -> str:
+        return replace_markdown_extension(self.site_rel_path, ".clear.html")
+
+    @property
+    def clear_html_url(self) -> str:
+        return to_public_url(self.clear_html_rel_path)
+
+    @property
     def history_rel_path(self) -> str:
         return replace_markdown_extension(self.site_rel_path, ".history.html")
 
@@ -1196,6 +1204,15 @@ def main(argv: list[str] | None = None) -> int:
             "document.html",
             output_path_for_relative(config.output_dir, document.canonical_html_rel_path),
             context,
+        )
+        render_template(
+            environment,
+            "clear.html",
+            output_path_for_relative(config.output_dir, document.clear_html_rel_path),
+            {
+                "page_title": page_meta.title,
+                "body_html": body_html,
+            },
         )
         target_raw_path = output_path_for_relative(config.output_dir, document.site_rel_path)
         ensure_parent(target_raw_path)
