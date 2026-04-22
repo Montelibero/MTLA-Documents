@@ -400,7 +400,16 @@ def parse_history_entries(repo_root: Path, config: Config, document_repo_path: s
             )
         )
 
-    return entries
+    return collapse_duplicate_content_runs(entries)
+
+
+def collapse_duplicate_content_runs(entries: list[HistoryEntry]) -> list[HistoryEntry]:
+    collapsed: list[HistoryEntry] = []
+    for entry in entries:
+        if collapsed and collapsed[-1].sha256 == entry.sha256:
+            continue
+        collapsed.append(entry)
+    return collapsed
 
 
 def slugify_github(text: str, used: dict[str, int]) -> str:
