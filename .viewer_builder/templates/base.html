@@ -10,8 +10,9 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{ site_url('/apple-touch-icon.png') }}">
   <link rel="manifest" href="{{ site_url('/site.webmanifest') }}">
   <link rel="stylesheet" href="{{ site_url('/assets/site.css') }}">
+  {% block head_extra %}{% endblock %}
 </head>
-<body class="{{ body_class }}">
+<body class="{{ body_class }}" data-site-base-path="{{ site_base_path }}">
   <header class="site-header">
     <div class="site-header__inner">
       <h1 class="site-header__title">
@@ -50,5 +51,6 @@
   <main class="page-shell">
     {% block content %}{% endblock %}
   </main>
+  {% block body_end %}{% endblock %}
 </body>
 </html>

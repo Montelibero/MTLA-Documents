@@ -189,6 +189,16 @@ class HeadingEntry:
     children: list["HeadingEntry"] = field(default_factory=list)
 
 
+@dataclass
+class SearchDocument:
+    canonical_key: str
+    url: str
+    filename: str
+    is_external: bool
+    h1: str
+    headings: list[dict[str, str | int]]
+
+
 def replace_markdown_extension(path_value: str, new_suffix: str) -> str:
     if not path_value.endswith(".md"):
         raise ValueError(f"Not a markdown path: {path_value}")
@@ -461,6 +471,10 @@ class MarkdownRenderer:
         contents_headings = normalize_contents_headings(headings)
         return html, build_heading_tree(contents_headings), len(contents_headings)
 
+    def extract_headings(self, markdown_text: str) -> list[HeadingEntry]:
+        tokens = self.markdown.parse(markdown_text)
+        return self._apply_heading_ids(tokens)
+
     def _apply_heading_ids(self, tokens: list[Token]) -> list[HeadingEntry]:
         used: dict[str, int] = defaultdict(int)
         headings: list[HeadingEntry] = []
@@ -604,6 +618,55 @@ def write_data_json(config: Config, documents: list[Document], snapshots: dict[s
     )
 
 
+def build_search_documents(config: Config, documents: list[Document], markdown_renderer: MarkdownRenderer) -> list[SearchDocument]:
+    search_documents: list[SearchDocument] = []
+    for document in sorted(documents, key=lambda item: canonical_data_key(item.site_rel_path).lower()):
+        markdown_text = document.current_bytes.decode("utf-8", errors="replace")
+        headings = markdown_renderer.extract_headings(markdown_text)
+        h1 = next((heading.text for heading in headings if heading.level == 1 and heading.text), "")
+        search_documents.append(
+            SearchDocument(
+                canonical_key=canonical_data_key(document.site_rel_path),
+                url=site_url(config, document.canonical_html_url),
+                filename=document.filename,
+                is_external=document.source_root == "External",
+                h1=h1,
+                headings=[
+                    {
+                        "level": heading.level,
+                        "text": heading.text,
+                        "anchor": heading.anchor,
+                    }
+                    for heading in headings
+                    if heading.text
+                ],
+            )
+        )
+    return search_documents
+
+
+def write_search_index(config: Config, search_documents: list[SearchDocument]) -> None:
+    payload = {
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+        "document_count": len(search_documents),
+        "documents": [
+            {
+                "canonical_key": document.canonical_key,
+                "url": document.url,
+                "filename": document.filename,
+                "is_external": document.is_external,
+                "h1": document.h1,
+                "headings": document.headings,
+            }
+            for document in search_documents
+        ],
+    }
+    (config.output_dir / "search-index.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
 def build_breadcrumbs_for_path(site_rel_path: str, is_directory: bool, final_label: str) -> list[dict[str, str]]:
     crumbs = [{"label": "Home", "url": "/"}]
     normalized = site_rel_path.strip("/")
@@ -729,6 +792,7 @@ def build_environment(repo_root: Path, config: Config) -> Environment:
     )
     environment.globals["site_url"] = lambda public_url: site_url(config, public_url)
     environment.globals["site_title"] = config.site_title
+    environment.globals["site_base_path"] = config.site_base_path or "/"
     return environment
 
 
@@ -827,6 +891,7 @@ def main(argv: list[str] | None = None) -> int:
 
     markdown_renderer = MarkdownRenderer(config, public_lookup)
     environment = build_environment(repo_root, config)
+    search_documents = build_search_documents(config, documents, markdown_renderer)
 
     snapshots: dict[str, SnapshotPage] = {}
 
@@ -1036,6 +1101,7 @@ def main(argv: list[str] | None = None) -> int:
                 "body_class": "page-index",
                 "page": page,
                 "readme_html": readme_html,
+                "search_enabled": page.site_dir_rel_path == "",
             },
         )
 
@@ -1061,6 +1127,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     write_data_json(config, documents, snapshots)
+    write_search_index(config, search_documents)
 
     LOGGER.info("Generated %s documents", len(documents))
     LOGGER.info("Generated %s historical snapshots", len(snapshots))

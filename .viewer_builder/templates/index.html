@@ -2,6 +2,28 @@
 
 {% block content %}
 <section class="index-layout">
+  {% if search_enabled %}
+  <section class="panel search-panel" data-search-root data-index-url="{{ site_url('/search-index.json') }}" data-minisearch-url="{{ site_url('/assets/vendor/minisearch.min.js') }}">
+    <form class="search-form" method="get" action="https://duckduckgo.com/">
+      <label class="search-form__label" for="site-search-input">Search documents</label>
+      <div class="search-form__row">
+        <input
+          id="site-search-input"
+          class="search-form__input"
+          type="search"
+          name="q"
+          inputmode="search"
+          autocomplete="off"
+          placeholder="Filename or heading"
+          data-search-input
+        >
+        <button class="search-form__button" type="submit" data-search-submit>Search</button>
+      </div>
+    </form>
+    <div class="search-results" hidden data-search-results></div>
+  </section>
+  {% endif %}
+
   {% if readme_html %}
   <section class="panel markdown-body">
     {{ readme_html | safe }}
@@ -35,4 +57,10 @@
     {% endif %}
   </section>
 </section>
+{% endblock %}
+
+{% block body_end %}
+  {% if search_enabled %}
+  <script defer src="{{ site_url('/assets/search.js') }}"></script>
+  {% endif %}
 {% endblock %}
