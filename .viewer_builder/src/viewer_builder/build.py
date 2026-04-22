@@ -43,6 +43,7 @@ class HistoryEntry:
     commit_sha: str
     commit_url: str
     committed_at_label: str
+    committed_at_iso: str
     repo_path_at_commit: str
     sha256: str
     body: bytes
@@ -84,6 +85,7 @@ class Document:
     current_commit_sha: str = ""
     current_commit_url: str = ""
     current_committed_at_label: str = ""
+    current_committed_at_iso: str = ""
 
     @property
     def filename(self) -> str:
@@ -165,6 +167,7 @@ class SnapshotPage:
     commit_sha: str
     commit_url: str
     committed_at_label: str
+    committed_at_iso: str
     source_repo_path_at_commit: str
     status_badges: list[dict[str, str]] = field(default_factory=list)
 
@@ -261,6 +264,12 @@ def iso_to_utc_label(value: str) -> str:
     normalized = value.replace("Z", "+00:00")
     timestamp = datetime.fromisoformat(normalized).astimezone(timezone.utc)
     return timestamp.strftime("%Y-%m-%d %H:%M")
+
+
+def iso_to_utc_timestamp(value: str) -> str:
+    normalized = value.replace("Z", "+00:00")
+    timestamp = datetime.fromisoformat(normalized).astimezone(timezone.utc)
+    return timestamp.isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def run_git(repo_root: Path, *args: str, text: bool = True) -> str | bytes:
@@ -384,6 +393,7 @@ def parse_history_entries(repo_root: Path, config: Config, document_repo_path: s
                 commit_sha=commit_sha,
                 commit_url=f"{config.repo_commit_base_url}/{commit_sha}",
                 committed_at_label=iso_to_utc_label(committed_at),
+                committed_at_iso=iso_to_utc_timestamp(committed_at),
                 repo_path_at_commit=chosen_repo_path,
                 sha256=sha256,
                 body=body,
@@ -517,6 +527,63 @@ def normalize_contents_headings(headings: list[HeadingEntry]) -> list[HeadingEnt
     if len(top_level_headings) == 1:
         return [heading for heading in headings if heading.level != 1]
     return headings
+
+
+def repo_url_from_commit_base_url(commit_base_url: str) -> str:
+    if commit_base_url.endswith("/commit"):
+        return commit_base_url[:-7]
+    return commit_base_url
+
+
+def canonical_data_key(site_rel_path: str) -> str:
+    if not site_rel_path.endswith(".md"):
+        raise ValueError(f"Not a markdown path: {site_rel_path}")
+    return "/" + quote(site_rel_path[:-3].strip("/"), safe="/")
+
+
+def build_history_hashes(document: Document) -> list[str]:
+    start_index = 1 if document.history and document.history[0].sha256 == document.current_sha256 else 0
+    return [entry.sha256 for entry in document.history[start_index:]]
+
+
+def write_data_json(config: Config, documents: list[Document], snapshots: dict[str, SnapshotPage]) -> None:
+    current: dict[str, dict] = {}
+    for document in sorted(documents, key=lambda item: canonical_data_key(item.site_rel_path).lower()):
+        document_data: dict[str, object] = {
+            "current_hash": document.current_sha256,
+            "history_hashes": build_history_hashes(document),
+        }
+        if document.source_root == "External":
+            document_data["is_external"] = True
+        current[canonical_data_key(document.site_rel_path)] = document_data
+
+    hashes = {
+        sha256: {
+            "commit": snapshot.commit_sha,
+            "commit_url": snapshot.commit_url,
+            "fixed_in_git_at": snapshot.committed_at_iso,
+        }
+        for sha256, snapshot in sorted(snapshots.items())
+    }
+
+    historical_snapshot_count = sum(len(build_history_hashes(document)) for document in documents)
+    payload = {
+        "meta": {
+            "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
+            "source_url": repo_url_from_commit_base_url(config.repo_commit_base_url),
+            "stats": {
+                "current_documents": len(documents),
+                "historical_snapshots": historical_snapshot_count,
+                "unique_hashes": len(snapshots),
+            },
+        },
+        "current": current,
+        "hashes": hashes,
+    }
+    (config.output_dir / "data.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def build_breadcrumbs_for_path(site_rel_path: str, is_directory: bool, final_label: str) -> list[dict[str, str]]:
@@ -681,6 +748,7 @@ def main(argv: list[str] | None = None) -> int:
         document.current_commit_sha = document.history[0].commit_sha
         document.current_commit_url = document.history[0].commit_url
         document.current_committed_at_label = document.history[0].committed_at_label
+        document.current_committed_at_iso = document.history[0].committed_at_iso
         document.current_sha256 = hashlib.sha256(current_bytes).hexdigest()
         if document.current_sha256 != document.history[0].sha256:
             LOGGER.warning(
@@ -734,7 +802,16 @@ def main(argv: list[str] | None = None) -> int:
 
     snapshots: dict[str, SnapshotPage] = {}
 
-    def register_snapshot(document: Document, sha256: str, body: bytes, commit_sha: str, commit_url: str, committed_at_label: str, repo_path_at_commit: str) -> None:
+    def register_snapshot(
+        document: Document,
+        sha256: str,
+        body: bytes,
+        commit_sha: str,
+        commit_url: str,
+        committed_at_label: str,
+        committed_at_iso: str,
+        repo_path_at_commit: str,
+    ) -> None:
         existing = snapshots.get(sha256)
         if existing is not None:
             if sha256 == document.current_sha256:
@@ -761,6 +838,7 @@ def main(argv: list[str] | None = None) -> int:
             commit_sha=commit_sha,
             commit_url=commit_url,
             committed_at_label=committed_at_label,
+            committed_at_iso=committed_at_iso,
             source_repo_path_at_commit=repo_path_at_commit,
             status_badges=[
                 make_status_badge("Current version", "success")
@@ -778,6 +856,7 @@ def main(argv: list[str] | None = None) -> int:
                 commit_sha=entry.commit_sha,
                 commit_url=entry.commit_url,
                 committed_at_label=entry.committed_at_label,
+                committed_at_iso=entry.committed_at_iso,
                 repo_path_at_commit=entry.repo_path_at_commit,
             )
         register_snapshot(
@@ -787,6 +866,7 @@ def main(argv: list[str] | None = None) -> int:
             commit_sha=document.current_commit_sha,
             commit_url=document.current_commit_url,
             committed_at_label=document.current_committed_at_label,
+            committed_at_iso=document.current_committed_at_iso,
             repo_path_at_commit=document.repo_path,
         )
 
@@ -951,6 +1031,8 @@ def main(argv: list[str] | None = None) -> int:
                 "body_html": body_html,
             },
         )
+
+    write_data_json(config, documents, snapshots)
 
     LOGGER.info("Generated %s documents", len(documents))
     LOGGER.info("Generated %s historical snapshots", len(snapshots))

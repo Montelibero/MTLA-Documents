@@ -2,6 +2,10 @@ Montelibero Association file viewer
 
 This is a static website generated from the Git repository of Montelibero Association documents.
 
+Machine-readable index:
+- A machine-readable registry of current documents and snapshot metadata is published as:
+  `/data.json`
+
 Historical snapshots:
 - Every historical document version is also published by content hash.
 - The raw Markdown form of a historical snapshot can be fetched as:
