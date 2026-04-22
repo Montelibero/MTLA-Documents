@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 
+{% macro render_contents(items) %}
+<ul class="contents-tree">
+  {% for item in items %}
+  <li>
+    <a href="#{{ item.anchor }}">{{ item.text }}</a>
+    {% if item.children %}
+    {{ render_contents(item.children) }}
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
 {% block content %}
 <article class="document-layout">
   <section class="document-meta">
@@ -84,8 +97,17 @@
     {% endif %}
   </section>
 
-  <section class="document-body markdown-body">
-    {{ body_html | safe }}
-  </section>
+  <div class="document-content">
+    {% if contents %}
+    <section class="document-contents panel">
+      <h2>Contents</h2>
+      {{ render_contents(contents) }}
+    </section>
+    {% endif %}
+
+    <section class="document-body markdown-body">
+      {{ body_html | safe }}
+    </section>
+  </div>
 </article>
 {% endblock %}

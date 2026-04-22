@@ -177,6 +177,14 @@ class SnapshotPage:
         return f"/{self.sha256}.md"
 
 
+@dataclass
+class HeadingEntry:
+    level: int
+    text: str
+    anchor: str
+    children: list["HeadingEntry"] = field(default_factory=list)
+
+
 def replace_markdown_extension(path_value: str, new_suffix: str) -> str:
     if not path_value.endswith(".md"):
         raise ValueError(f"Not a markdown path: {path_value}")
@@ -417,14 +425,17 @@ class MarkdownRenderer:
         if self.markdown.linkify is not None:
             self.markdown.linkify.set({"fuzzy_link": False, "fuzzy_email": False})
 
-    def render(self, markdown_text: str, current_repo_path: str) -> str:
+    def render(self, markdown_text: str, current_repo_path: str) -> tuple[str, list[HeadingEntry], int]:
         tokens = self.markdown.parse(markdown_text)
-        self._apply_heading_ids(tokens)
+        headings = self._apply_heading_ids(tokens)
         self._rewrite_links(tokens, current_repo_path)
-        return self.markdown.renderer.render(tokens, self.markdown.options, {})
+        html = self.markdown.renderer.render(tokens, self.markdown.options, {})
+        contents_headings = normalize_contents_headings(headings)
+        return html, build_heading_tree(contents_headings), len(contents_headings)
 
-    def _apply_heading_ids(self, tokens: list[Token]) -> None:
+    def _apply_heading_ids(self, tokens: list[Token]) -> list[HeadingEntry]:
         used: dict[str, int] = defaultdict(int)
+        headings: list[HeadingEntry] = []
         for index, token in enumerate(tokens):
             if token.type != "heading_open":
                 continue
@@ -433,6 +444,14 @@ class MarkdownRenderer:
                 continue
             slug = slugify_github(inline_token.content, used)
             token.attrSet("id", slug)
+            headings.append(
+                HeadingEntry(
+                    level=int(token.tag[1]),
+                    text=inline_token.content.strip(),
+                    anchor=slug,
+                )
+            )
+        return headings
 
     def _rewrite_links(self, tokens: Iterable[Token], current_repo_path: str) -> None:
         for token in tokens:
@@ -477,6 +496,27 @@ class MarkdownRenderer:
         if public_url is None:
             return href
         return site_url(self.config, public_url) + fragment
+
+
+def build_heading_tree(headings: list[HeadingEntry]) -> list[HeadingEntry]:
+    root = HeadingEntry(level=0, text="", anchor="")
+    stack: list[HeadingEntry] = [root]
+
+    for heading in headings:
+        while len(stack) > 1 and heading.level <= stack[-1].level:
+            stack.pop()
+        heading.children = []
+        stack[-1].children.append(heading)
+        stack.append(heading)
+
+    return root.children
+
+
+def normalize_contents_headings(headings: list[HeadingEntry]) -> list[HeadingEntry]:
+    top_level_headings = [heading for heading in headings if heading.level == 1]
+    if len(top_level_headings) == 1:
+        return [heading for heading in headings if heading.level != 1]
+    return headings
 
 
 def build_breadcrumbs_for_path(site_rel_path: str, is_directory: bool, final_label: str) -> list[dict[str, str]]:
@@ -755,7 +795,7 @@ def main(argv: list[str] | None = None) -> int:
     generate_favicons(repo_root, config)
 
     for document in documents:
-        body_html = markdown_renderer.render(document.current_bytes.decode("utf-8", errors="replace"), document.repo_path)
+        body_html, contents, heading_count = markdown_renderer.render(document.current_bytes.decode("utf-8", errors="replace"), document.repo_path)
         breadcrumbs = build_breadcrumbs_for_path(document.site_rel_path, is_directory=False, final_label=document.filename)
         context = {
             "page_title": f"{document.filename} - {config.site_title}",
@@ -764,6 +804,7 @@ def main(argv: list[str] | None = None) -> int:
             "body_class": "page-document",
             "document": document,
             "status_badges": [make_status_badge("Current version", "success")],
+            "contents": contents if heading_count > 2 else [],
             "body_html": body_html,
             "print_header": {
                 "project_title": config.site_title,
@@ -794,7 +835,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     for snapshot in snapshots.values():
-        body_html = markdown_renderer.render(snapshot.body.decode("utf-8", errors="replace"), snapshot.source_repo_path_at_commit)
+        body_html, contents, heading_count = markdown_renderer.render(snapshot.body.decode("utf-8", errors="replace"), snapshot.source_repo_path_at_commit)
         breadcrumbs = build_breadcrumbs_for_path(snapshot.breadcrumb_site_rel, is_directory=False, final_label=snapshot.canonical_filename)
         render_template(
             environment,
@@ -807,6 +848,7 @@ def main(argv: list[str] | None = None) -> int:
                 "body_class": "page-document page-snapshot",
                 "snapshot": snapshot,
                 "status_badges": snapshot.status_badges,
+                "contents": contents if heading_count > 2 else [],
                 "body_html": body_html,
                 "print_header": {
                     "project_title": config.site_title,
@@ -873,7 +915,7 @@ def main(argv: list[str] | None = None) -> int:
         readme_html = ""
         if page.readme_repo_path:
             readme_bytes = (repo_root / page.readme_repo_path).read_bytes()
-            readme_html = markdown_renderer.render(readme_bytes.decode("utf-8", errors="replace"), page.readme_repo_path)
+            readme_html, _, _ = markdown_renderer.render(readme_bytes.decode("utf-8", errors="replace"), page.readme_repo_path)
         breadcrumbs = build_breadcrumbs_for_path(page.site_dir_rel_path, is_directory=True, final_label=page.title)
         render_template(
             environment,
@@ -890,7 +932,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     for meta_page in meta_pages.values():
-        body_html = markdown_renderer.render(
+        body_html, _, _ = markdown_renderer.render(
             (repo_root / meta_page.repo_path).read_text(encoding="utf-8"),
             meta_page.repo_path,
         )
