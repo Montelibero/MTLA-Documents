@@ -27,28 +27,39 @@
 <body class="{{ body_class }}" data-site-base-path="{{ site_base_path }}">
   <header class="site-header">
     <div class="site-header__inner">
-      <h1 class="site-header__title">
-        <a href="{{ site_url('/') }}">
-          <span class="site-header__title-line">Montelibero Association</span>
-          <span class="site-header__title-line">Document Storage</span>
-        </a>
-      </h1>
-      <p class="site-header__subtitle">{{ section_title }}</p>
-      {% if breadcrumbs %}
-      <nav class="breadcrumbs" aria-label="Breadcrumbs">
-        <ol>
-          {% for crumb in breadcrumbs %}
-          <li>
-            {% if crumb.url %}
-            <a href="{{ site_url(crumb.url) }}">{{ crumb.label }}</a>
-            {% else %}
-            <span>{{ crumb.label }}</span>
-            {% endif %}
-          </li>
-          {% endfor %}
-        </ol>
-      </nav>
-      {% endif %}
+      <a class="site-header__logo-link" href="{{ site_url('/') }}" aria-label="Montelibero Association Document Storage">
+        <img
+          class="site-header__logo"
+          src="{{ site_url('/assets/branding/fspe_logo.png') }}"
+          alt=""
+          width="144"
+          height="144"
+        >
+      </a>
+      <div class="site-header__content">
+        <h1 class="site-header__title">
+          <a href="{{ site_url('/') }}">
+            <span class="site-header__title-line">Montelibero Association</span>
+            <span class="site-header__title-line">Document Storage</span>
+          </a>
+        </h1>
+        <p class="site-header__subtitle">{{ section_title }}</p>
+        {% if breadcrumbs %}
+        <nav class="breadcrumbs" aria-label="Breadcrumbs">
+          <ol>
+            {% for crumb in breadcrumbs %}
+            <li>
+              {% if crumb.url %}
+              <a href="{{ site_url(crumb.url) }}">{{ crumb.label }}</a>
+              {% else %}
+              <span>{{ crumb.label }}</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ol>
+        </nav>
+        {% endif %}
+      </div>
     </div>
   </header>
 

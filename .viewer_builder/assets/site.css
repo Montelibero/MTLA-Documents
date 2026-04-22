@@ -107,7 +107,31 @@ a:hover {
 }
 
 .site-header__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.15rem;
   padding: 2.4rem 0 1.4rem;
+}
+
+.site-header__logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(5rem, 11vw, 12rem);
+  aspect-ratio: 1;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+.site-header__logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.site-header__content {
+  min-width: 0;
 }
 
 .site-header__title {
@@ -590,6 +614,15 @@ a:hover {
 }
 
 @media (max-width: 900px) {
+  .site-header__inner {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .site-header__logo-link {
+    width: 4.8rem;
+  }
+
   .document-layout {
     grid-template-columns: 1fr;
   }
