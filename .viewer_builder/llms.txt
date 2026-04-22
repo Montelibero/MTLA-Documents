@@ -9,11 +9,11 @@ Machine-readable index:
 Historical snapshots:
 - Every historical document version is also published by content hash.
 - The raw Markdown form of a historical snapshot can be fetched as:
-  `/{SHA-256}.md`
+  `/snapshots/{SHA-256}.md`
 - The SHA-256 value is computed from the exact raw Markdown bytes of that version.
 
 If you already know the SHA-256 of a document version, the most direct way to retrieve its exact text is:
-- request `/{SHA-256}.md`
+- request `/snapshots/{SHA-256}.md`
 
 Scope:
 - This site is for reading current and historical document texts.

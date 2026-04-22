@@ -28,6 +28,7 @@ from PIL import Image
 LOGGER = logging.getLogger("viewer_builder")
 COMMIT_MARKER = "__COMMIT__"
 LANGUAGE_RE = re.compile(r"^(?P<stem>.+)\.(?P<lang>[A-Za-z0-9_-]+)\.md$")
+SNAPSHOTS_DIR = "snapshots"
 
 
 @dataclass
@@ -50,11 +51,11 @@ class HistoryEntry:
 
     @property
     def public_html_url(self) -> str:
-        return f"/{self.sha256}.html"
+        return snapshot_public_url(self.sha256, ".html")
 
     @property
     def public_md_url(self) -> str:
-        return f"/{self.sha256}.md"
+        return snapshot_public_url(self.sha256, ".md")
 
 
 @dataclass
@@ -126,7 +127,7 @@ class Document:
 
     @property
     def permanent_snapshot_url(self) -> str:
-        return f"/{self.current_sha256}.html"
+        return snapshot_public_url(self.current_sha256, ".html")
 
 
 @dataclass
@@ -173,11 +174,11 @@ class SnapshotPage:
 
     @property
     def public_html_url(self) -> str:
-        return f"/{self.sha256}.html"
+        return snapshot_public_url(self.sha256, ".html")
 
     @property
     def public_md_url(self) -> str:
-        return f"/{self.sha256}.md"
+        return snapshot_public_url(self.sha256, ".md")
 
 
 @dataclass
@@ -206,6 +207,14 @@ def to_directory_public_url(site_dir_rel_path: str) -> str:
     if not stripped:
         return "/"
     return "/" + quote(stripped, safe="/") + "/"
+
+
+def snapshot_rel_path(sha256: str, suffix: str) -> str:
+    return f"{SNAPSHOTS_DIR}/{sha256}{suffix}"
+
+
+def snapshot_public_url(sha256: str, suffix: str) -> str:
+    return to_public_url(snapshot_rel_path(sha256, suffix))
 
 
 def repo_path_for_fs_path(repo_root: Path, fs_path: Path) -> str:
@@ -637,6 +646,7 @@ def copy_root_extras(repo_root: Path, config: Config) -> None:
     llms_source = repo_root / ".viewer_builder" / "llms.txt"
     if llms_source.exists():
         shutil.copy2(llms_source, config.output_dir / "llms.txt")
+    write_robots_txt(config)
 
 
 def generate_favicons(repo_root: Path, config: Config) -> None:
@@ -689,6 +699,15 @@ def generate_favicons(repo_root: Path, config: Config) -> None:
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+
+
+def write_robots_txt(config: Config) -> None:
+    snapshots_path = site_url(config, f"/{SNAPSHOTS_DIR}/")
+    robots_body = (
+        "User-agent: *\n"
+        f"Disallow: {snapshots_path}\n"
+    )
+    (config.output_dir / "robots.txt").write_text(robots_body, encoding="utf-8")
 
 
 def ensure_parent(path_value: Path) -> None:
@@ -929,7 +948,7 @@ def main(argv: list[str] | None = None) -> int:
         render_template(
             environment,
             "document.html",
-            output_path_for_relative(config.output_dir, f"{snapshot.sha256}.html"),
+            output_path_for_relative(config.output_dir, snapshot_rel_path(snapshot.sha256, ".html")),
             {
                 "page_title": f"{snapshot.canonical_filename} Snapshot - {config.site_title}",
                 "section_title": snapshot.section_title,
@@ -945,7 +964,7 @@ def main(argv: list[str] | None = None) -> int:
                 },
             },
         )
-        target_raw_path = output_path_for_relative(config.output_dir, f"{snapshot.sha256}.md")
+        target_raw_path = output_path_for_relative(config.output_dir, snapshot_rel_path(snapshot.sha256, ".md"))
         ensure_parent(target_raw_path)
         target_raw_path.write_bytes(snapshot.body)
 
