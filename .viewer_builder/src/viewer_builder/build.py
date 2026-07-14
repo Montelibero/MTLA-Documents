@@ -381,10 +381,20 @@ def split_language_variant(filename: str) -> tuple[str, str] | None:
 
 def select_meta_for_document(document_repo_path: str, meta_pages: dict[str, MetaPage]) -> MetaPage | None:
     document_path = PurePosixPath(document_repo_path)
-    sibling_specific = f"{document_path.stem}.meta.md"
-    specific_repo_path = str(document_path.parent / sibling_specific)
-    if specific_repo_path in meta_pages:
-        return meta_pages[specific_repo_path]
+    specific_filenames = [f"{document_path.stem}.meta.md"]
+
+    language_variant = split_language_variant(document_path.name)
+    if language_variant is not None:
+        language_neutral_stem, _language = language_variant
+        language_neutral_filename = f"{language_neutral_stem}.meta.md"
+        if language_neutral_filename not in specific_filenames:
+            specific_filenames.append(language_neutral_filename)
+
+    for filename in specific_filenames:
+        specific_repo_path = str(document_path.parent / filename)
+        if specific_repo_path in meta_pages:
+            return meta_pages[specific_repo_path]
+
     shared_repo_path = str(document_path.parent / "Meta.md")
     return meta_pages.get(shared_repo_path)
 
