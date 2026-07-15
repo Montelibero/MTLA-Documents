@@ -2,4 +2,4 @@
 .idea
 .viewer_builder/.output/
 .viewer_builder/.venv/
-.viewer_builder/src/**/__pycache__/
+.viewer_builder/**/__pycache__/

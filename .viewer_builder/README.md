@@ -4,6 +4,8 @@ Static site generator for the Montelibero document viewer.
 
 ## Local build
 
+Requires Python 3.10 or newer.
+
 Native Python build:
 
 ```bash
@@ -19,6 +21,36 @@ python3 .viewer_builder/scripts/build.py
 ```
 
 The generated site goes to `.viewer_builder/.output/site/`.
+
+To protect repository files, `--output-dir` accepts only a child directory of
+`.viewer_builder/.output/`. For example:
+
+```bash
+python3 .viewer_builder/scripts/build.py --output-dir .viewer_builder/.output/preview
+```
+
+The builder may fully remove the selected directory before generating the site.
+
+Symbolic links are not supported anywhere under `Internal/` or `External/`,
+and Markdown sources must be regular files. The build rejects links instead of
+following their targets or publishing content that differs from the Git blob.
+
+Before replacing an existing build, the builder validates the complete output
+manifest. Duplicate or case-equivalent targets and file-versus-directory
+conflicts stop the build and leave the previous generated site untouched.
+
+After generation, local links, asset references, and HTML anchors are checked
+against the output manifest. External URLs are not requested, and outgoing
+links in immutable historical snapshot pages do not block a current build.
+
+Raw HTML in Markdown is escaped and displayed as text. Use Markdown syntax for
+formatting; repository content cannot inject executable tags or attributes into
+generated pages.
+
+Notarization status is fetched from Stellar Horizon. By default, unavailable or
+invalid data produces a warning and local builds continue with best-effort
+notarization status. Deployment builds use `--require-notarization-data` and
+stop before replacing the output when the response is invalid.
 
 ## Local preview
 
