@@ -36,7 +36,7 @@ jobs:
         run: python -m unittest discover -s .viewer_builder/tests
 
       - name: Build site
-        run: python .viewer_builder/scripts/build.py
+        run: python .viewer_builder/scripts/build.py --require-notarization-data
 
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0

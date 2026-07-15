@@ -47,6 +47,11 @@ Raw HTML in Markdown is escaped and displayed as text. Use Markdown syntax for
 formatting; repository content cannot inject executable tags or attributes into
 generated pages.
 
+Notarization status is fetched from Stellar Horizon. By default, unavailable or
+invalid data produces a warning and local builds continue with best-effort
+notarization status. Deployment builds use `--require-notarization-data` and
+stop before replacing the output when the response is invalid.
+
 ## Local preview
 
 Build first, then start the local preview server:

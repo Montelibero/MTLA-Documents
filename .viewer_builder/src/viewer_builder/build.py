@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import base64
-import binascii
 import hashlib
 import logging
 import os
@@ -17,6 +16,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from html.parser import HTMLParser
+from http.client import HTTPException
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 from urllib.parse import quote, unquote, urlsplit
@@ -34,7 +34,8 @@ LOGGER = logging.getLogger("viewer_builder")
 COMMIT_MARKER = "__COMMIT__"
 LANGUAGE_RE = re.compile(r"^(?P<stem>.+)\.(?P<lang>[A-Za-z0-9_-]+)\.md$")
 SNAPSHOTS_DIR = "snapshots"
-NOTARIZATION_ACCOUNT_URL = "https://horizon.stellar.org/accounts/GCNVDZIHGX473FEI7IXCUAEXUJ4BGCKEMHF36VYP5EMS7PX2QBLAMTLA"
+NOTARIZATION_ACCOUNT_ID = "GCNVDZIHGX473FEI7IXCUAEXUJ4BGCKEMHF36VYP5EMS7PX2QBLAMTLA"
+NOTARIZATION_ACCOUNT_URL = f"https://horizon.stellar.org/accounts/{NOTARIZATION_ACCOUNT_ID}"
 FAVICON_SPECS = {
     "favicon-16x16.png": (16, 16),
     "favicon-32x32.png": (32, 32),
@@ -1278,23 +1279,46 @@ def add_status_badge(badges: list[dict[str, str]], label: str, tone: str) -> Non
     badges.append(make_status_badge(label, tone))
 
 
-def fetch_notarized_hashes(timeout_seconds: int = 10) -> set[str]:
+def fetch_notarized_hashes(
+    timeout_seconds: int = 10,
+    *,
+    fail_on_error: bool = False,
+) -> set[str]:
     try:
         with urlopen(NOTARIZATION_ACCOUNT_URL, timeout=timeout_seconds) as response:
             payload = json.load(response)
-    except (TimeoutError, URLError, OSError, json.JSONDecodeError) as error:
-        LOGGER.warning("Unable to fetch notarization data from Stellar Horizon: %s", error)
+
+        if not isinstance(payload, dict):
+            raise ValueError("response root is not an object")
+        if payload.get("account_id") != NOTARIZATION_ACCOUNT_ID:
+            raise ValueError("response contains an unexpected account ID")
+        data = payload.get("data")
+        if not isinstance(data, dict):
+            raise ValueError("response data field is not an object")
+    except (TimeoutError, URLError, OSError, HTTPException, ValueError) as error:
+        message = f"Unable to fetch valid notarization data from Stellar Horizon: {error}"
+        if fail_on_error:
+            raise RuntimeError(message) from error
+        LOGGER.warning("%s", message)
         return set()
 
     notarized_hashes: set[str] = set()
-    for key, encoded_value in (payload.get("data") or {}).items():
+    for key, encoded_value in data.items():
         try:
-            decoded = base64.b64decode(encoded_value).decode("utf-8").strip()
-        except (binascii.Error, UnicodeDecodeError) as error:
-            LOGGER.warning("Unable to decode notarization data field %s: %s", key, error)
+            decoded_bytes = base64.b64decode(encoded_value, validate=True)
+        except (TypeError, ValueError) as error:
+            message = f"Unable to decode notarization data field {key}: {error}"
+            if fail_on_error:
+                raise RuntimeError(message) from error
+            LOGGER.warning("%s", message)
+            continue
+        try:
+            decoded = decoded_bytes.decode("utf-8").strip()
+        except UnicodeDecodeError:
             continue
         if re.fullmatch(r"[0-9a-fA-F]{64}", decoded):
             notarized_hashes.add(decoded.lower())
+
     return notarized_hashes
 
 
@@ -1424,6 +1448,11 @@ def main(argv: list[str] | None = None) -> int:
         "--output-dir",
         help="Override the configured output directory within .viewer_builder/.output/.",
     )
+    parser.add_argument(
+        "--require-notarization-data",
+        action="store_true",
+        help="Fail the build when valid Stellar Horizon notarization data is unavailable.",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -1439,7 +1468,13 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as error:
         parser.error(str(error))
 
-    notarized_hashes = fetch_notarized_hashes()
+    try:
+        notarized_hashes = fetch_notarized_hashes(
+            fail_on_error=args.require_notarization_data,
+        )
+    except RuntimeError as error:
+        LOGGER.error("%s", error)
+        return 1
     try:
         documents_repo_paths, readmes, meta_sources, directories = discover_tree(repo_root)
     except ValueError as error:
