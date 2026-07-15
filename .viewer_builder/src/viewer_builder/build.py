@@ -885,7 +885,9 @@ class MarkdownRenderer:
     def __init__(self, config: Config, public_lookup: dict[str, str]):
         self.config = config
         self.public_lookup = public_lookup
-        self.markdown = MarkdownIt("commonmark", {"html": True, "linkify": True})
+        # Rendered Markdown is inserted into templates as trusted HTML, so raw
+        # HTML from repository content must remain disabled here.
+        self.markdown = MarkdownIt("commonmark", {"html": False, "linkify": True})
         self.markdown.enable("table")
         self.markdown.enable("strikethrough")
         self.markdown.enable("linkify")

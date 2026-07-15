@@ -41,6 +41,10 @@ After generation, local links, asset references, and HTML anchors are checked
 against the output manifest. External URLs are not requested, and outgoing
 links in immutable historical snapshot pages do not block a current build.
 
+Raw HTML in Markdown is escaped and displayed as text. Use Markdown syntax for
+formatting; repository content cannot inject executable tags or attributes into
+generated pages.
+
 ## Local preview
 
 Build first, then start the local preview server:
