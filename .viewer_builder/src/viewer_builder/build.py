@@ -285,6 +285,28 @@ def load_config(repo_root: Path, output_override: str | None) -> Config:
     )
 
 
+def reset_output_directory(repo_root: Path, output_dir: Path) -> Path:
+    resolved_repo_root = repo_root.resolve()
+    managed_output_root = resolved_repo_root / ".viewer_builder" / ".output"
+
+    if managed_output_root.resolve() != managed_output_root:
+        raise ValueError(f"Managed output root must not be a symlink: {managed_output_root}")
+
+    resolved_output_dir = output_dir.resolve()
+    if managed_output_root not in resolved_output_dir.parents:
+        raise ValueError(
+            "Output directory must be a child of "
+            f"{managed_output_root}: {resolved_output_dir}"
+        )
+
+    if resolved_output_dir.exists():
+        if not resolved_output_dir.is_dir():
+            raise ValueError(f"Output path is not a directory: {resolved_output_dir}")
+        shutil.rmtree(resolved_output_dir)
+    resolved_output_dir.mkdir(parents=True, exist_ok=True)
+    return resolved_output_dir
+
+
 def site_url(config: Config, public_url: str) -> str:
     if public_url == "/":
         return f"{config.site_base_path}/" if config.site_base_path else "/"
@@ -1056,7 +1078,10 @@ def build_environment(repo_root: Path, config: Config) -> Environment:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build the Montelibero document viewer.")
-    parser.add_argument("--output-dir", help="Override the configured output directory.")
+    parser.add_argument(
+        "--output-dir",
+        help="Override the configured output directory within .viewer_builder/.output/.",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -1067,12 +1092,12 @@ def main(argv: list[str] | None = None) -> int:
 
     repo_root = Path(__file__).resolve().parents[3]
     config = load_config(repo_root, args.output_dir)
+    try:
+        config.output_dir = reset_output_directory(repo_root, config.output_dir)
+    except ValueError as error:
+        parser.error(str(error))
+
     notarized_hashes = fetch_notarized_hashes()
-
-    if config.output_dir.exists():
-        shutil.rmtree(config.output_dir)
-    config.output_dir.mkdir(parents=True, exist_ok=True)
-
     documents_repo_paths, readmes, meta_sources, directories = discover_tree(repo_root)
     meta_pages: dict[str, MetaPage] = {}
     for meta_repo_path in sorted(meta_sources):

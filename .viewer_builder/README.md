@@ -20,6 +20,15 @@ python3 .viewer_builder/scripts/build.py
 
 The generated site goes to `.viewer_builder/.output/site/`.
 
+To protect repository files, `--output-dir` accepts only a child directory of
+`.viewer_builder/.output/`. For example:
+
+```bash
+python3 .viewer_builder/scripts/build.py --output-dir .viewer_builder/.output/preview
+```
+
+The builder may fully remove the selected directory before generating the site.
+
 ## Local preview
 
 Build first, then start the local preview server:
