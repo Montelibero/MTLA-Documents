@@ -374,15 +374,30 @@ def discover_tree(repo_root: Path) -> tuple[list[str], dict[str, str], dict[str,
 
     for root_name in ("Internal", "External"):
         root_path = repo_root / root_name
-        for current_dir, dirnames, filenames in os.walk(root_path):
+        if root_path.is_symlink():
+            raise ValueError(f"Source tree must not be a symbolic link: {root_name}")
+
+        for current_dir, dirnames, filenames in os.walk(root_path, followlinks=False):
             dirnames.sort()
             filenames.sort()
             current_dir_path = Path(current_dir)
             repo_dir = repo_path_for_fs_path(repo_root, current_dir_path)
+
+            for entry_name in [*dirnames, *filenames]:
+                entry_path = current_dir_path / entry_name
+                if entry_path.is_symlink():
+                    entry_repo_path = repo_path_for_fs_path(repo_root, entry_path)
+                    raise ValueError(
+                        f"Symbolic links are not supported in source trees: {entry_repo_path}"
+                    )
+
             for filename in filenames:
                 if not filename.endswith(".md"):
                     continue
-                repo_path = repo_path_for_fs_path(repo_root, current_dir_path / filename)
+                source_path = current_dir_path / filename
+                repo_path = repo_path_for_fs_path(repo_root, source_path)
+                if not source_path.is_file():
+                    raise ValueError(f"Markdown source must be a regular file: {repo_path}")
                 if filename == "README.md":
                     readmes[repo_dir] = repo_path
                 elif filename == "Meta.md" or filename.endswith(".meta.md"):
@@ -1098,7 +1113,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(str(error))
 
     notarized_hashes = fetch_notarized_hashes()
-    documents_repo_paths, readmes, meta_sources, directories = discover_tree(repo_root)
+    try:
+        documents_repo_paths, readmes, meta_sources, directories = discover_tree(repo_root)
+    except ValueError as error:
+        LOGGER.error("Unable to discover source documents: %s", error)
+        return 1
     meta_pages: dict[str, MetaPage] = {}
     for meta_repo_path in sorted(meta_sources):
         site_rel_path = replace_markdown_extension(site_rel_from_repo_path(meta_repo_path), ".html")

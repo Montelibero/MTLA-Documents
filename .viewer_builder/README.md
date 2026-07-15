@@ -29,6 +29,10 @@ python3 .viewer_builder/scripts/build.py --output-dir .viewer_builder/.output/pr
 
 The builder may fully remove the selected directory before generating the site.
 
+Symbolic links are not supported anywhere under `Internal/` or `External/`,
+and Markdown sources must be regular files. The build rejects links instead of
+following their targets or publishing content that differs from the Git blob.
+
 ## Local preview
 
 Build first, then start the local preview server:
