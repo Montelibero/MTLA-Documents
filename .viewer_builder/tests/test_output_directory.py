@@ -9,10 +9,23 @@ SRC_ROOT = REPO_ROOT / ".viewer_builder" / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from viewer_builder.build import reset_output_directory  # noqa: E402
+from viewer_builder.build import reset_output_directory, validate_output_directory  # noqa: E402
 
 
 class ResetOutputDirectoryTests(unittest.TestCase):
+    def test_validation_preserves_existing_output(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            repo_root = Path(temporary_directory)
+            output_dir = repo_root / ".viewer_builder" / ".output" / "site"
+            output_dir.mkdir(parents=True)
+            existing_file = output_dir / "current.html"
+            existing_file.write_text("current", encoding="utf-8")
+
+            result = validate_output_directory(repo_root, output_dir)
+
+            self.assertEqual(result, output_dir.resolve())
+            self.assertEqual(existing_file.read_text(encoding="utf-8"), "current")
+
     def test_resets_child_of_managed_output_root(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             repo_root = Path(temporary_directory)

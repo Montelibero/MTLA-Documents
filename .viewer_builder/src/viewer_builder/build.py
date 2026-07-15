@@ -35,6 +35,13 @@ COMMIT_MARKER = "__COMMIT__"
 LANGUAGE_RE = re.compile(r"^(?P<stem>.+)\.(?P<lang>[A-Za-z0-9_-]+)\.md$")
 SNAPSHOTS_DIR = "snapshots"
 NOTARIZATION_ACCOUNT_URL = "https://horizon.stellar.org/accounts/GCNVDZIHGX473FEI7IXCUAEXUJ4BGCKEMHF36VYP5EMS7PX2QBLAMTLA"
+FAVICON_SPECS = {
+    "favicon-16x16.png": (16, 16),
+    "favicon-32x32.png": (32, 32),
+    "apple-touch-icon.png": (180, 180),
+    "android-chrome-192x192.png": (192, 192),
+    "android-chrome-512x512.png": (512, 512),
+}
 
 
 @dataclass
@@ -44,6 +51,13 @@ class Config:
     site_origin: str
     site_base_path: str
     output_dir: Path
+
+
+@dataclass(frozen=True)
+class OutputClaim:
+    relative_path: str
+    producer: str
+    is_directory: bool = False
 
 
 @dataclass
@@ -285,7 +299,7 @@ def load_config(repo_root: Path, output_override: str | None) -> Config:
     )
 
 
-def reset_output_directory(repo_root: Path, output_dir: Path) -> Path:
+def validate_output_directory(repo_root: Path, output_dir: Path) -> Path:
     resolved_repo_root = repo_root.resolve()
     managed_output_root = resolved_repo_root / ".viewer_builder" / ".output"
 
@@ -299,9 +313,14 @@ def reset_output_directory(repo_root: Path, output_dir: Path) -> Path:
             f"{managed_output_root}: {resolved_output_dir}"
         )
 
+    if resolved_output_dir.exists() and not resolved_output_dir.is_dir():
+        raise ValueError(f"Output path is not a directory: {resolved_output_dir}")
+    return resolved_output_dir
+
+
+def reset_output_directory(repo_root: Path, output_dir: Path) -> Path:
+    resolved_output_dir = validate_output_directory(repo_root, output_dir)
     if resolved_output_dir.exists():
-        if not resolved_output_dir.is_dir():
-            raise ValueError(f"Output path is not a directory: {resolved_output_dir}")
         shutil.rmtree(resolved_output_dir)
     resolved_output_dir.mkdir(parents=True, exist_ok=True)
     return resolved_output_dir
@@ -337,9 +356,204 @@ def output_path_for_relative(output_root: Path, relative_path: str) -> Path:
 
 
 def output_path_for_directory(output_root: Path, site_dir_rel_path: str) -> Path:
+    return output_root / PurePosixPath(directory_index_rel_path(site_dir_rel_path))
+
+
+def directory_index_rel_path(site_dir_rel_path: str) -> str:
     if not site_dir_rel_path:
-        return output_root / "index.html"
-    return output_root / PurePosixPath(site_dir_rel_path) / "index.html"
+        return "index.html"
+    return (PurePosixPath(site_dir_rel_path) / "index.html").as_posix()
+
+
+def output_collision_key(path_value: PurePosixPath) -> PurePosixPath:
+    return PurePosixPath(
+        *(unicodedata.normalize("NFC", part).casefold() for part in path_value.parts)
+    )
+
+
+def validate_output_claims(claims: Iterable[OutputClaim]) -> dict[str, OutputClaim]:
+    files: dict[PurePosixPath, OutputClaim] = {}
+    directories: dict[PurePosixPath, OutputClaim] = {}
+    explicit_directories: dict[PurePosixPath, OutputClaim] = {}
+
+    for claim in claims:
+        path_value = PurePosixPath(claim.relative_path)
+        if path_value.is_absolute() or not path_value.parts or ".." in path_value.parts:
+            raise ValueError(
+                f"Invalid output path for {claim.producer}: {claim.relative_path}"
+            )
+
+        normalized_claim = OutputClaim(path_value.as_posix(), claim.producer, claim.is_directory)
+        collision_key = output_collision_key(path_value)
+        if claim.is_directory:
+            existing_file = files.get(collision_key)
+            if existing_file is not None:
+                raise ValueError(
+                    f"Output path conflict between {existing_file.relative_path} and "
+                    f"{normalized_claim.relative_path}: {existing_file.producer} writes a file, "
+                    f"but {claim.producer} requires a directory"
+                )
+            existing_directory = explicit_directories.get(collision_key)
+            if (
+                existing_directory is not None
+                and existing_directory.relative_path != normalized_claim.relative_path
+            ):
+                raise ValueError(
+                    f"Output directory collision between {existing_directory.relative_path} and "
+                    f"{normalized_claim.relative_path}: {existing_directory.producer} conflicts "
+                    f"with {claim.producer}"
+                )
+        else:
+            existing_file = files.get(collision_key)
+            if existing_file is not None:
+                raise ValueError(
+                    f"Output path collision between {existing_file.relative_path} and "
+                    f"{normalized_claim.relative_path}: {existing_file.producer} conflicts with "
+                    f"{claim.producer}"
+                )
+            existing_directory = directories.get(collision_key)
+            if existing_directory is not None:
+                raise ValueError(
+                    f"Output path conflict at {normalized_claim.relative_path}: "
+                    f"{claim.producer} writes a file, "
+                    f"but {existing_directory.producer} requires a directory"
+                )
+
+        for parent in collision_key.parents:
+            if parent == PurePosixPath("."):
+                break
+            existing_file = files.get(parent)
+            if existing_file is not None:
+                raise ValueError(
+                    f"Output path conflict between {existing_file.relative_path} and "
+                    f"{normalized_claim.relative_path}: {existing_file.producer} writes a file, "
+                    f"but {claim.producer} requires a directory"
+                )
+
+        if claim.is_directory:
+            directories.setdefault(collision_key, normalized_claim)
+            explicit_directories.setdefault(collision_key, normalized_claim)
+        else:
+            files[collision_key] = normalized_claim
+        for parent in collision_key.parents:
+            if parent == PurePosixPath("."):
+                break
+            directories.setdefault(parent, normalized_claim)
+
+    return {claim.relative_path: claim for claim in files.values()}
+
+
+def collect_output_claims(
+    repo_root: Path,
+    documents: Iterable[Document],
+    snapshot_hashes: Iterable[str],
+    repo_dirs: Iterable[str],
+    meta_pages: Iterable[MetaPage],
+) -> list[OutputClaim]:
+    claims: list[OutputClaim] = []
+
+    assets_root = repo_root / ".viewer_builder" / "assets"
+    if assets_root.is_symlink():
+        raise ValueError("Builder assets directory must not be a symbolic link")
+    if assets_root.is_dir():
+        claims.append(OutputClaim("assets", "builder assets", is_directory=True))
+        for current_dir, dirnames, filenames in os.walk(assets_root, followlinks=False):
+            dirnames.sort()
+            filenames.sort()
+            current_dir_path = Path(current_dir)
+            entries = [(dirname, True) for dirname in dirnames]
+            entries.extend((filename, False) for filename in filenames)
+            for entry_name, is_directory in entries:
+                asset_path = current_dir_path / entry_name
+                relative_asset_path = asset_path.relative_to(assets_root).as_posix()
+                if asset_path.is_symlink():
+                    raise ValueError(
+                        f"Builder asset must not be a symbolic link: {relative_asset_path}"
+                    )
+                if not is_directory and not asset_path.is_file():
+                    raise ValueError(f"Builder asset must be a regular file: {relative_asset_path}")
+                output_asset_path = (
+                    PurePosixPath("assets") / relative_asset_path
+                ).as_posix()
+                claims.append(
+                    OutputClaim(
+                        output_asset_path,
+                        f"builder asset {relative_asset_path}",
+                        is_directory=is_directory,
+                    )
+                )
+
+    root_files = {
+        "data.json": "document data index",
+        "search-index.json": "search index",
+        "sitemap.xml": "sitemap",
+        "robots.txt": "robots policy",
+    }
+    llms_source = repo_root / ".viewer_builder" / "llms.txt"
+    if llms_source.is_symlink():
+        raise ValueError("LLM overview must not be a symbolic link")
+    if llms_source.is_file():
+        root_files["llms.txt"] = "LLM overview"
+    if (assets_root / "branding" / "fspe_logo.png").is_file():
+        for filename in FAVICON_SPECS:
+            root_files[filename] = f"generated favicon {filename}"
+        root_files["favicon.ico"] = "generated favicon favicon.ico"
+        root_files["site.webmanifest"] = "generated web app manifest"
+    claims.extend(OutputClaim(path_value, producer) for path_value, producer in root_files.items())
+
+    for document in sorted(documents, key=lambda item: item.repo_path):
+        document_outputs = (
+            (document.site_rel_path, "raw document"),
+            (document.canonical_html_rel_path, "canonical document page"),
+            (document.clear_html_rel_path, "clear document page"),
+            (document.history_rel_path, "document history page"),
+        )
+        for relative_path, output_kind in document_outputs:
+            claims.append(OutputClaim(relative_path, f"{output_kind} for {document.repo_path}"))
+
+    for sha256 in sorted(set(snapshot_hashes)):
+        claims.append(
+            OutputClaim(snapshot_rel_path(sha256, ".html"), f"HTML snapshot {sha256}")
+        )
+        claims.append(
+            OutputClaim(snapshot_rel_path(sha256, ".md"), f"raw snapshot {sha256}")
+        )
+
+    for repo_dir in sorted(set(repo_dirs)):
+        site_dir_rel_path = site_rel_from_repo_path(repo_dir)
+        claims.append(
+            OutputClaim(
+                directory_index_rel_path(site_dir_rel_path),
+                f"directory page for {repo_dir}",
+            )
+        )
+
+    for meta_page in sorted(meta_pages, key=lambda item: item.repo_path):
+        claims.append(
+            OutputClaim(meta_page.site_rel_path, f"meta page for {meta_page.repo_path}")
+        )
+
+    return claims
+
+
+def verify_output_manifest(output_dir: Path, manifest: dict[str, OutputClaim]) -> None:
+    actual_files = {
+        output_path.relative_to(output_dir).as_posix()
+        for output_path in output_dir.rglob("*")
+        if output_path.is_file()
+    }
+    planned_files = set(manifest)
+    missing_files = sorted(planned_files - actual_files)
+    unexpected_files = sorted(actual_files - planned_files)
+    if not missing_files and not unexpected_files:
+        return
+
+    details: list[str] = []
+    if missing_files:
+        details.append(f"missing: {', '.join(missing_files[:10])}")
+    if unexpected_files:
+        details.append(f"unexpected: {', '.join(unexpected_files[:10])}")
+    raise RuntimeError(f"Build output does not match manifest ({'; '.join(details)})")
 
 
 def iso_to_utc_label(value: str) -> str:
@@ -981,16 +1195,8 @@ def generate_favicons(repo_root: Path, config: Config) -> None:
     if not source_logo.exists():
         return
 
-    favicon_specs = {
-        "favicon-16x16.png": (16, 16),
-        "favicon-32x32.png": (32, 32),
-        "apple-touch-icon.png": (180, 180),
-        "android-chrome-192x192.png": (192, 192),
-        "android-chrome-512x512.png": (512, 512),
-    }
-
     base_image = Image.open(source_logo).convert("RGBA")
-    for filename, size in favicon_specs.items():
+    for filename, size in FAVICON_SPECS.items():
         resized = base_image.resize(size, Image.Resampling.LANCZOS)
         resized.save(config.output_dir / filename)
 
@@ -1108,7 +1314,7 @@ def main(argv: list[str] | None = None) -> int:
     repo_root = Path(__file__).resolve().parents[3]
     config = load_config(repo_root, args.output_dir)
     try:
-        config.output_dir = reset_output_directory(repo_root, config.output_dir)
+        config.output_dir = validate_output_directory(repo_root, config.output_dir)
     except ValueError as error:
         parser.error(str(error))
 
@@ -1267,6 +1473,21 @@ def main(argv: list[str] | None = None) -> int:
             committed_at_iso=document.current_committed_at_iso,
             repo_path_at_commit=document.repo_path,
         )
+
+    try:
+        output_claims = collect_output_claims(
+            repo_root,
+            documents,
+            snapshots,
+            all_repo_dirs,
+            meta_pages.values(),
+        )
+        output_manifest = validate_output_claims(output_claims)
+        config.output_dir = reset_output_directory(repo_root, config.output_dir)
+    except ValueError as error:
+        LOGGER.error("Unable to prepare build output: %s", error)
+        return 1
+    LOGGER.info("Validated %s output files", len(output_manifest))
 
     copy_assets(repo_root, config)
     copy_root_extras(repo_root, config)
@@ -1465,6 +1686,11 @@ def main(argv: list[str] | None = None) -> int:
     write_data_json(config, documents, snapshots)
     write_search_index(config, search_documents)
     write_sitemap_xml(config, directory_pages, documents, meta_pages)
+    try:
+        verify_output_manifest(config.output_dir, output_manifest)
+    except RuntimeError as error:
+        LOGGER.error("Unable to verify build output: %s", error)
+        return 1
 
     LOGGER.info("Generated %s documents", len(documents))
     LOGGER.info("Generated %s historical snapshots", len(snapshots))

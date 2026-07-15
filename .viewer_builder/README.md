@@ -33,6 +33,10 @@ Symbolic links are not supported anywhere under `Internal/` or `External/`,
 and Markdown sources must be regular files. The build rejects links instead of
 following their targets or publishing content that differs from the Git blob.
 
+Before replacing an existing build, the builder validates the complete output
+manifest. Duplicate or case-equivalent targets and file-versus-directory
+conflicts stop the build and leave the previous generated site untouched.
+
 ## Local preview
 
 Build first, then start the local preview server:
