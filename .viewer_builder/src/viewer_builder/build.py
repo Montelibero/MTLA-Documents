@@ -357,7 +357,6 @@ def discover_tree(repo_root: Path) -> tuple[list[str], dict[str, str], dict[str,
             filenames.sort()
             current_dir_path = Path(current_dir)
             repo_dir = repo_path_for_fs_path(repo_root, current_dir_path)
-            directories.add(repo_dir)
             for filename in filenames:
                 if not filename.endswith(".md"):
                     continue
@@ -368,6 +367,15 @@ def discover_tree(repo_root: Path) -> tuple[list[str], dict[str, str], dict[str,
                     metas[repo_path] = repo_path
                 else:
                     documents.append(repo_path)
+
+    for repo_path in [*documents, *readmes.values()]:
+        repo_dir = PurePosixPath(repo_path).parent
+        while repo_dir.parts and repo_dir.parts[0] in {"Internal", "External"}:
+            directories.add(repo_dir.as_posix())
+            if len(repo_dir.parts) == 1:
+                break
+            repo_dir = repo_dir.parent
+
     documents.sort()
     return documents, readmes, metas, directories
 
