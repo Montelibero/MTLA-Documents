@@ -349,6 +349,22 @@ class HTMLTextExtractor(HTMLParser):
         return " ".join(self.parts)
 
 
+class HTMLLinkExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.references: list[tuple[str, str]] = []
+        self.anchors: set[str] = set()
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            if value is None:
+                continue
+            if name in {"href", "src"}:
+                self.references.append((name, value))
+            elif name in {"id", "name"}:
+                self.anchors.add(value)
+
+
 def output_path_for_relative(output_root: Path, relative_path: str) -> Path:
     if not relative_path:
         return output_root / "index.html"
@@ -554,6 +570,109 @@ def verify_output_manifest(output_dir: Path, manifest: dict[str, OutputClaim]) -
     if unexpected_files:
         details.append(f"unexpected: {', '.join(unexpected_files[:10])}")
     raise RuntimeError(f"Build output does not match manifest ({'; '.join(details)})")
+
+
+def resolve_local_output_reference(
+    config: Config,
+    source_rel_path: str,
+    reference: str,
+) -> tuple[str, str] | None:
+    parsed = urlsplit(reference.strip())
+    site_origin = urlsplit(config.site_origin)
+    if parsed.netloc:
+        if parsed.netloc.casefold() != site_origin.netloc.casefold():
+            return None
+        if parsed.scheme and parsed.scheme.casefold() != site_origin.scheme.casefold():
+            return None
+    elif parsed.scheme:
+        return None
+
+    raw_path = unquote(parsed.path)
+    fragment = unquote(parsed.fragment)
+    if not raw_path:
+        return source_rel_path, fragment
+
+    if raw_path.startswith("/"):
+        site_base_path = config.site_base_path.rstrip("/")
+        if site_base_path:
+            if raw_path == site_base_path:
+                raw_path = "/"
+            elif raw_path.startswith(f"{site_base_path}/"):
+                raw_path = raw_path[len(site_base_path):]
+            else:
+                return None
+        normalized_path = posixpath.normpath(raw_path.lstrip("/"))
+    else:
+        source_parent = PurePosixPath(source_rel_path).parent.as_posix()
+        normalized_path = posixpath.normpath(posixpath.join(source_parent, raw_path))
+
+    if normalized_path in {"", "."}:
+        target_rel_path = "index.html"
+    elif raw_path.endswith("/"):
+        target_rel_path = f"{normalized_path.rstrip('/')}/index.html"
+    else:
+        target_rel_path = normalized_path
+    return target_rel_path, fragment
+
+
+def validate_generated_links(config: Config, manifest: dict[str, OutputClaim]) -> int:
+    parsed_html: dict[str, HTMLLinkExtractor] = {}
+
+    def parse_html(relative_path: str) -> HTMLLinkExtractor:
+        existing = parsed_html.get(relative_path)
+        if existing is not None:
+            return existing
+        extractor = HTMLLinkExtractor()
+        extractor.feed(
+            (config.output_dir / PurePosixPath(relative_path)).read_text(encoding="utf-8")
+        )
+        extractor.close()
+        parsed_html[relative_path] = extractor
+        return extractor
+
+    broken_references: list[str] = []
+    checked_reference_count = 0
+    for source_rel_path, claim in sorted(manifest.items()):
+        if not source_rel_path.endswith(".html"):
+            continue
+        if claim.producer.startswith(("HTML snapshot ", "clear document page ")):
+            continue
+
+        extractor = parse_html(source_rel_path)
+        for attribute, reference in dict.fromkeys(extractor.references):
+            resolved = resolve_local_output_reference(config, source_rel_path, reference)
+            if resolved is None:
+                continue
+            checked_reference_count += 1
+            target_rel_path, fragment = resolved
+            if target_rel_path not in manifest:
+                directory_index = f"{target_rel_path.rstrip('/')}/index.html"
+                if directory_index in manifest:
+                    target_rel_path = directory_index
+                else:
+                    broken_references.append(
+                        f"{claim.producer} ({source_rel_path}): "
+                        f"{attribute}={reference!r} -> missing {target_rel_path}"
+                    )
+                    continue
+
+            if (
+                fragment
+                and not fragment.startswith(":~:text=")
+                and target_rel_path.endswith(".html")
+                and fragment not in parse_html(target_rel_path).anchors
+            ):
+                broken_references.append(
+                    f"{claim.producer} ({source_rel_path}): "
+                    f"{attribute}={reference!r} -> missing #{fragment} in {target_rel_path}"
+                )
+
+    if broken_references:
+        details = "\n".join(f"- {message}" for message in broken_references[:20])
+        if len(broken_references) > 20:
+            details += f"\n- ... and {len(broken_references) - 20} more"
+        raise ValueError(f"Broken local references:\n{details}")
+    return checked_reference_count
 
 
 def iso_to_utc_label(value: str) -> str:
@@ -1691,6 +1810,12 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeError as error:
         LOGGER.error("Unable to verify build output: %s", error)
         return 1
+    try:
+        checked_reference_count = validate_generated_links(config, output_manifest)
+    except ValueError as error:
+        LOGGER.error("Unable to validate generated links: %s", error)
+        return 1
+    LOGGER.info("Validated %s local references", checked_reference_count)
 
     LOGGER.info("Generated %s documents", len(documents))
     LOGGER.info("Generated %s historical snapshots", len(snapshots))

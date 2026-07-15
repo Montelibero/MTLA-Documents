@@ -4,7 +4,7 @@ Montelibero Association Council Regulations
 Russian version:
 ----------------
 
-File: [Council.ru.md](Council.ru)
+File: [Council.ru.md](Council.ru.md)
 
 SHA-256: `01c9197cc8bce047bd75340bf76640181019250cfcb86206d125b19f0c6f5490`
 

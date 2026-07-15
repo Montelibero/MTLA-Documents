@@ -37,6 +37,10 @@ Before replacing an existing build, the builder validates the complete output
 manifest. Duplicate or case-equivalent targets and file-versus-directory
 conflicts stop the build and leave the previous generated site untouched.
 
+After generation, local links, asset references, and HTML anchors are checked
+against the output manifest. External URLs are not requested, and outgoing
+links in immutable historical snapshot pages do not block a current build.
+
 ## Local preview
 
 Build first, then start the local preview server:
