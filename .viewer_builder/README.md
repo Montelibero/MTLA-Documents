@@ -4,6 +4,8 @@ Static site generator for the Montelibero document viewer.
 
 ## Local build
 
+Requires Python 3.10 or newer.
+
 Native Python build:
 
 ```bash
