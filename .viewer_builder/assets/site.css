@@ -326,6 +326,10 @@ a:hover {
   z-index: 3;
   width: clamp(9.5rem, 22vw, 14rem);
   aspect-ratio: 1;
+  transform: translate(
+    var(--notar-stamp-x, 0%),
+    var(--notar-stamp-y, 0%)
+  );
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;

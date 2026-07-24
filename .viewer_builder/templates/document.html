@@ -107,7 +107,11 @@
 
     <section class="document-body markdown-body">
       {% if has_notarized_stamp %}
-      <div class="document-notar-stamp" aria-hidden="true">
+      <div
+        class="document-notar-stamp"
+        style="--notar-stamp-x: {{ notar_stamp_position.x }}%; --notar-stamp-y: {{ notar_stamp_position.y }}%;"
+        aria-hidden="true"
+      >
         <img
           class="document-notar-stamp__image"
           src="{{ site_url('/assets/mtla_notar_stamp.png') }}"

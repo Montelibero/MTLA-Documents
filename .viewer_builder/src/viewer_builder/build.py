@@ -43,6 +43,7 @@ FAVICON_SPECS = {
     "android-chrome-192x192.png": (192, 192),
     "android-chrome-512x512.png": (512, 512),
 }
+NOTAR_STAMP_MAX_OFFSET_PERCENT = 20
 
 
 @dataclass
@@ -263,6 +264,19 @@ def snapshot_rel_path(sha256: str, suffix: str) -> str:
 
 def snapshot_public_url(sha256: str, suffix: str) -> str:
     return to_public_url(snapshot_rel_path(sha256, suffix))
+
+
+def notar_stamp_position(sha256: str) -> dict[str, float]:
+    max_segment_value = (1 << 32) - 1
+
+    def offset(segment: str) -> float:
+        normalized = int(segment, 16) / max_segment_value
+        return round((normalized * 2 - 1) * NOTAR_STAMP_MAX_OFFSET_PERCENT, 2)
+
+    return {
+        "x": offset(sha256[:8]),
+        "y": offset(sha256[8:16]),
+    }
 
 
 def repo_path_for_fs_path(repo_root: Path, fs_path: Path) -> str:
@@ -1665,6 +1679,7 @@ def main(argv: list[str] | None = None) -> int:
             "body_class": "page-document",
             "document": document,
             "has_notarized_stamp": document.current_sha256 in notarized_hashes,
+            "notar_stamp_position": notar_stamp_position(document.current_sha256),
             "status_badges": (
                 [make_status_badge("Current version", "success"), make_status_badge("Notarized", "notarized")]
                 if document.current_sha256 in notarized_hashes
@@ -1729,6 +1744,7 @@ def main(argv: list[str] | None = None) -> int:
                 "body_class": "page-document page-snapshot",
                 "snapshot": snapshot,
                 "has_notarized_stamp": any(badge["label"] == "Notarized" for badge in snapshot.status_badges),
+                "notar_stamp_position": notar_stamp_position(snapshot.sha256),
                 "status_badges": snapshot.status_badges,
                 "contents": contents if heading_count > 2 else [],
                 "body_html": body_html,

@@ -17,6 +17,7 @@ from viewer_builder.build import (  # noqa: E402
     NOTARIZATION_ACCOUNT_ID,
     fetch_notarized_hashes,
     main,
+    notar_stamp_position,
 )
 
 
@@ -119,6 +120,31 @@ class FetchNotarizedHashesTests(unittest.TestCase):
                     self.assertRaisesRegex(RuntimeError, "Unable to decode notarization data field"),
                 ):
                     fetch_notarized_hashes(fail_on_error=True)
+
+
+class NotarStampPositionTests(unittest.TestCase):
+    def test_maps_hash_segments_to_full_offset_range(self) -> None:
+        self.assertEqual(
+            notar_stamp_position("0" * 64),
+            {"x": -20.0, "y": -20.0},
+        )
+        self.assertEqual(
+            notar_stamp_position("f" * 64),
+            {"x": 20.0, "y": 20.0},
+        )
+
+    def test_is_stable_and_varies_between_document_hashes(self) -> None:
+        first_hash = "0123456789abcdef" + "0" * 48
+        second_hash = "fedcba9876543210" + "0" * 48
+
+        self.assertEqual(
+            notar_stamp_position(first_hash),
+            notar_stamp_position(first_hash),
+        )
+        self.assertNotEqual(
+            notar_stamp_position(first_hash),
+            notar_stamp_position(second_hash),
+        )
 
 
 class StrictNotarizationCliTests(unittest.TestCase):
