@@ -44,6 +44,7 @@ FAVICON_SPECS = {
     "android-chrome-512x512.png": (512, 512),
 }
 NOTAR_STAMP_MAX_OFFSET_PERCENT = 20
+NOTAR_STAMP_MAX_ROTATION_OFFSET_DEGREES = 30
 
 
 @dataclass
@@ -266,16 +267,20 @@ def snapshot_public_url(sha256: str, suffix: str) -> str:
     return to_public_url(snapshot_rel_path(sha256, suffix))
 
 
-def notar_stamp_position(sha256: str) -> dict[str, float]:
+def notar_stamp_transform(sha256: str) -> dict[str, float]:
     max_segment_value = (1 << 32) - 1
 
-    def offset(segment: str) -> float:
+    def offset(segment: str, maximum: int) -> float:
         normalized = int(segment, 16) / max_segment_value
-        return round((normalized * 2 - 1) * NOTAR_STAMP_MAX_OFFSET_PERCENT, 2)
+        return round((normalized * 2 - 1) * maximum, 2)
 
     return {
-        "x": offset(sha256[:8]),
-        "y": offset(sha256[8:16]),
+        "x": offset(sha256[:8], NOTAR_STAMP_MAX_OFFSET_PERCENT),
+        "y": offset(sha256[8:16], NOTAR_STAMP_MAX_OFFSET_PERCENT),
+        "rotation": offset(
+            sha256[16:24],
+            NOTAR_STAMP_MAX_ROTATION_OFFSET_DEGREES,
+        ),
     }
 
 
@@ -1679,7 +1684,7 @@ def main(argv: list[str] | None = None) -> int:
             "body_class": "page-document",
             "document": document,
             "has_notarized_stamp": document.current_sha256 in notarized_hashes,
-            "notar_stamp_position": notar_stamp_position(document.current_sha256),
+            "notar_stamp_transform": notar_stamp_transform(document.current_sha256),
             "status_badges": (
                 [make_status_badge("Current version", "success"), make_status_badge("Notarized", "notarized")]
                 if document.current_sha256 in notarized_hashes
@@ -1744,7 +1749,7 @@ def main(argv: list[str] | None = None) -> int:
                 "body_class": "page-document page-snapshot",
                 "snapshot": snapshot,
                 "has_notarized_stamp": any(badge["label"] == "Notarized" for badge in snapshot.status_badges),
-                "notar_stamp_position": notar_stamp_position(snapshot.sha256),
+                "notar_stamp_transform": notar_stamp_transform(snapshot.sha256),
                 "status_badges": snapshot.status_badges,
                 "contents": contents if heading_count > 2 else [],
                 "body_html": body_html,

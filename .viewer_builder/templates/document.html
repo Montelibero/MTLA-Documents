@@ -109,7 +109,7 @@
       {% if has_notarized_stamp %}
       <div
         class="document-notar-stamp"
-        style="--notar-stamp-x: {{ notar_stamp_position.x }}%; --notar-stamp-y: {{ notar_stamp_position.y }}%;"
+        style="--notar-stamp-x: {{ notar_stamp_transform.x }}%; --notar-stamp-y: {{ notar_stamp_transform.y }}%; --notar-stamp-rotation-offset: {{ notar_stamp_transform.rotation }}deg;"
         aria-hidden="true"
       >
         <img

@@ -341,7 +341,7 @@ a:hover {
   height: 100%;
   object-fit: contain;
   opacity: 0.60;
-  transform: rotate(30deg);
+  transform: rotate(calc(30deg + var(--notar-stamp-rotation-offset, 0deg)));
   transform-origin: 50% 50%;
   pointer-events: none;
   user-select: none;
