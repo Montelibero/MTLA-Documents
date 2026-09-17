@@ -212,10 +212,11 @@
     }
 
     for (const item of items) {
+      const resultIndex = startIndex;
       const link = document.createElement("a");
       link.className = "search-result";
       link.href = item.url;
-      link.dataset.resultIndex = String(startIndex);
+      link.dataset.resultIndex = String(resultIndex);
 
       const filename = document.createElement("span");
       filename.className = "search-result__filename";
@@ -241,7 +242,7 @@
       path.textContent = item.path;
       link.appendChild(path);
 
-      link.addEventListener("mouseenter", () => setActiveResult(startIndex));
+      link.addEventListener("mouseenter", () => setActiveResult(resultIndex));
       resultsContainer.appendChild(link);
       startIndex += 1;
     }
@@ -258,7 +259,9 @@
   }
 
   function renderResults(items) {
-    renderedResults = items;
+    const internal = items.filter((item) => !item.isExternal);
+    const external = items.filter((item) => item.isExternal);
+    renderedResults = [...internal, ...external];
     resultsContainer.innerHTML = "";
 
     if (!items.length) {
@@ -270,9 +273,6 @@
       activeIndex = -1;
       return;
     }
-
-    const internal = items.filter((item) => !item.isExternal);
-    const external = items.filter((item) => item.isExternal);
 
     let index = 0;
     index = renderSection("", internal, index);
